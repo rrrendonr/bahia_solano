@@ -1,0 +1,52 @@
+---
+interface Props {
+	quote: string;
+	name: string;
+	origin?: string;
+	variant?: 'featured' | 'default';
+}
+
+const { quote, name, origin, variant = 'default' } = Astro.props;
+---
+
+<figure class:list={['testimonial', `testimonial--${variant}`]}>
+	<blockquote>
+		<p>“{quote}”</p>
+	</blockquote>
+	<figcaption>
+		<span class="name">{name}</span>
+		{origin && <span class="origin"> · {origin}</span>}
+	</figcaption>
+</figure>
+
+<style>
+	.testimonial {
+		min-width: 0;
+	}
+
+	.testimonial--featured blockquote {
+		font-family: var(--font-heading);
+		font-weight: var(--weight-semibold);
+		font-size: clamp(2rem, 1.4rem + 2vw, 3rem);
+		line-height: var(--leading-snug);
+	}
+
+	.testimonial--default {
+		padding-left: var(--space-7);
+		border-left: 3px solid var(--color-cta);
+	}
+
+	.testimonial--default blockquote {
+		font-size: var(--text-lg);
+	}
+
+	figcaption {
+		margin-top: var(--space-5);
+		font-weight: var(--weight-semibold);
+		color: var(--color-text-muted);
+	}
+
+	.name {
+		color: var(--color-heading);
+	}
+</style>

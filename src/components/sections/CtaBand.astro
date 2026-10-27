@@ -1,0 +1,88 @@
+---
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+import { site } from '../../config/site';
+import type { Locale } from '../../i18n/config';
+import { localizePath } from '../../i18n/routes';
+import { useTranslations } from '../../i18n/ui';
+
+interface Props {
+	lang: Locale;
+	title: string;
+	/** Parte del titular resaltada en naranja */
+	titleAccent?: string;
+	text?: string;
+	id?: string;
+	/** Botón principal; por defecto "Cotiza tu viaje" → contacto */
+	ctaLabel?: string;
+	ctaHref?: string;
+}
+
+const { lang, title, titleAccent, text, id = 'cta', ctaLabel, ctaHref } = Astro.props;
+const t = useTranslations(lang);
+const { whatsapp } = site.contact;
+const headingId = `${id}-title`;
+---
+
+<section id={id} class="cta-band surface-inverse" aria-labelledby={headingId}>
+	<div class="container cta-inner">
+		<div class="cta-copy">
+			<h2 id={headingId}>
+				{title}
+				{titleAccent && <span class="accent">{titleAccent}</span>}
+			</h2>
+			{text && <p class="cta-text">{text}</p>}
+		</div>
+		<div class="cta-actions">
+			<Button href={ctaHref ?? localizePath('contact', lang)}>{ctaLabel ?? t('cta.quote')}</Button>
+			{
+				whatsapp && (
+					<Button href={`https://wa.me/${whatsapp}`} variant="ghost" target="_blank" rel="noopener">
+						<Icon name="message" size={22} strokeWidth={2} />
+						WhatsApp
+					</Button>
+				)
+			}
+		</div>
+	</div>
+</section>
+
+<style>
+	.cta-band {
+		padding-block: var(--section-space);
+	}
+
+	.cta-inner {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: var(--space-10);
+	}
+
+	.cta-copy {
+		max-width: 47.5rem;
+	}
+
+	.cta-copy h2 {
+		font-size: clamp(3rem, 1.8rem + 4.5vw, 6rem);
+	}
+
+	.accent {
+		display: block;
+		color: var(--color-cta);
+	}
+
+	.cta-text {
+		max-width: 32.5rem;
+		margin-top: var(--space-6);
+		font-size: var(--text-lg);
+		color: var(--color-text-muted);
+	}
+
+	.cta-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-4);
+	}
+</style>

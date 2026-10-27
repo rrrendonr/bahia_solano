@@ -1,0 +1,100 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Variant = 'primary' | 'ghost' | 'outline';
+type Size = 'sm' | 'md';
+
+type Props = {
+	variant?: Variant;
+	size?: Size;
+	href?: string;
+	type?: 'button' | 'submit' | 'reset';
+	class?: string;
+} & Omit<HTMLAttributes<'a'> & HTMLAttributes<'button'>, 'type' | 'class'>;
+
+const { variant = 'primary', size = 'md', href, type = 'button', class: className, ...rest } =
+	Astro.props;
+
+const classes = ['btn', `btn--${variant}`, `btn--${size}`, className];
+---
+
+{
+	href ? (
+		<a href={href} class:list={classes} {...rest}>
+			<slot />
+		</a>
+	) : (
+		<button type={type} class:list={classes} {...rest}>
+			<slot />
+		</button>
+	)
+}
+
+<style>
+	.btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-2);
+		min-height: var(--tap-target);
+		padding-inline: var(--space-6);
+		border: 2px solid transparent;
+		border-radius: var(--radius-md);
+		font-family: var(--font-heading);
+		font-weight: var(--weight-bold);
+		letter-spacing: var(--tracking-button);
+		text-transform: uppercase;
+		text-decoration: none;
+		white-space: nowrap;
+		cursor: pointer;
+		transition:
+			transform var(--duration-press) var(--ease-out),
+			background-color var(--duration-hover) var(--ease-out),
+			border-color var(--duration-hover) var(--ease-out),
+			color var(--duration-hover) var(--ease-out);
+	}
+
+	.btn:active {
+		transform: scale(0.97);
+	}
+
+	.btn--md {
+		min-height: 3.25rem; /* 52px */
+		font-size: var(--text-lg);
+	}
+
+	.btn--sm {
+		padding-inline: var(--space-5);
+		font-size: var(--text-base);
+	}
+
+	.btn--primary {
+		background: var(--color-cta);
+		color: var(--color-on-cta);
+	}
+
+	/* Fantasma: sobre fotos o fondos azules */
+	.btn--ghost {
+		border-color: rgb(250 249 246 / 0.7);
+		color: var(--color-sand-50);
+	}
+
+	/* Contorno: sobre fondos claros */
+	.btn--outline {
+		border-color: var(--color-navy-900);
+		color: var(--color-navy-900);
+	}
+
+	@media (hover: hover) and (pointer: fine) {
+		.btn--primary:hover {
+			background: var(--color-cta-hover);
+		}
+		.btn--ghost:hover {
+			background: rgb(250 249 246 / 0.1);
+		}
+		.btn--outline:hover {
+			background: var(--color-navy-900);
+			color: var(--color-sand-50);
+		}
+	}
+</style>

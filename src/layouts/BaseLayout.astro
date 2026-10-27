@@ -1,0 +1,68 @@
+---
+import { Font } from 'astro:assets';
+import '../styles/global.css';
+import SEO from '../components/seo/SEO.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import WhatsAppButton from '../components/layout/WhatsAppButton.astro';
+import { localeMeta, type Locale } from '../i18n/config';
+import type { RouteKey } from '../i18n/routes';
+import { useTranslations } from '../i18n/ui';
+
+interface Props {
+	lang: Locale;
+	title: string;
+	description: string;
+	alternates: Record<Locale, string>;
+	current?: RouteKey;
+	image?: string;
+	imageAlt?: string;
+	type?: 'website' | 'article';
+	noindex?: boolean;
+	/** Datos estructurados JSON-LD (uno o varios objetos schema.org) */
+	schema?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const { lang, title, description, alternates, current, image, imageAlt, type, noindex, schema } =
+	Astro.props;
+const t = useTranslations(lang);
+---
+
+<!doctype html>
+<html lang={localeMeta[lang].htmlLang}>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="theme-color" content="#002b5b" />
+		<meta name="generator" content={Astro.generator} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" sizes="32x32" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<link rel="sitemap" href="/sitemap-index.xml" />
+
+		<Font cssVariable="--font-display" preload />
+		<Font cssVariable="--font-body" preload />
+
+		<SEO
+			title={title}
+			description={description}
+			lang={lang}
+			alternates={alternates}
+			image={image}
+			imageAlt={imageAlt}
+			type={type}
+			noindex={noindex}
+		/>
+
+		{schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
+	</head>
+	<body>
+		<a class="skip-link" href="#main">{t('skip.link')}</a>
+		<Header lang={lang} alternates={alternates} current={current} />
+		<main id="main" tabindex="-1">
+			<slot />
+		</main>
+		<Footer lang={lang} />
+		<WhatsAppButton lang={lang} />
+	</body>
+</html>

@@ -1,0 +1,111 @@
+{
+	"seo": {
+		"title": "Sport fishing tours",
+		"description": "Three boats to fish Bahía Solano, Colombia. Every tour includes flights from Medellín, a stay at Darien Lodge, crew, guide and tackle."
+	},
+	"hero": {
+		"eyebrow": "Fishing tours",
+		"title": "One package.",
+		"titleAccent": "Three boats.",
+		"intro": "Every tour includes flights from Medellín, Darien Lodge, crew, guide and tackle. What you choose is the boat."
+	},
+	"featuredLabel": "Most popular",
+	"comparison": {
+		"eyebrow": "Compare",
+		"title": "Which boat is yours?",
+		"caption": "Comparison of the three boats",
+		"rows": {
+			"length": "Length",
+			"anglers": "Max anglers",
+			"engine": "Engine",
+			"fishingType": "Fishing type",
+			"range": "Range",
+			"idealFor": "Ideal for"
+		}
+	},
+	"includes": {
+		"eyebrow": "On every tour",
+		"title": "What’s included and what’s not",
+		"includedTitle": "Included",
+		"included": [
+			"Round-trip flight Medellín – Bahía Solano",
+			"Lodging at Darien Lodge",
+			"Boat with captain and crew",
+			"Fishing guide",
+			"Fishing tackle",
+			"[Meals? Airport–lodge transfers?]"
+		],
+		"excludedTitle": "Not included",
+		"excluded": [
+			"[E.g. flights to Medellín]",
+			"[E.g. alcoholic drinks]",
+			"[E.g. crew tips]",
+			"[E.g. travel insurance]"
+		]
+	},
+	"faq": {
+		"eyebrow": "FAQ",
+		"title": "Before you book",
+		"intro": "Don’t see your question? Message us on WhatsApp.",
+		"items": [
+			{
+				"question": "Do I need fishing experience?",
+				"answer": "[Answer: the guide works with beginners and experienced anglers alike.]"
+			},
+			{
+				"question": "Do I need a fishing license?",
+				"answer": "[Answer.]"
+			},
+			{
+				"question": "What should I bring?",
+				"answer": "[Answer.]"
+			},
+			{
+				"question": "What if the weather keeps us in?",
+				"answer": "[Answer.]"
+			},
+			{
+				"question": "What is the cancellation policy?",
+				"answer": "[Answer.]"
+			}
+		]
+	},
+	"cta": {
+		"title": "Picked your boat?",
+		"titleAccent": "Lock in your dates.",
+		"text": "Tell us your dates, group size and the boat you like. We’ll reply with availability and price."
+	},
+	"detail": {
+		"summaryTitle": "Summary",
+		"summary": {
+			"duration": "Duration",
+			"durationValue": "{days} days / {nights} nights",
+			"fishingDays": "Fishing days",
+			"anglers": "Anglers",
+			"anglersValue": "Up to {n}",
+			"departure": "Departs from",
+			"departureValue": "Medellín (flight included)",
+			"lodging": "Lodging"
+		},
+		"boatEyebrow": "The boat",
+		"specs": {
+			"length": "Length",
+			"engine": "Engine",
+			"capacity": "Capacity",
+			"crew": "Crew",
+			"fishingType": "Fishing type",
+			"onboard": "On board"
+		},
+		"itineraryEyebrow": "Itinerary",
+		"itineraryTitle": "Day by day",
+		"includedNote": "Flights, lodging, crew, guide and tackle included.",
+		"includedLink": "See what’s included and what’s not",
+		"otherToursTitle": "Other boats",
+		"galleryLabel": "Boat photos",
+		"cta": {
+			"title": "Is this your boat?",
+			"titleAccent": "Lock in your dates.",
+			"text": "Tell us your dates and group size. We’ll reply with availability and the package price."
+		}
+	}
+}

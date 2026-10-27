@@ -1,0 +1,363 @@
+---
+import { getEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import Icon from '../components/ui/Icon.astro';
+import TourCard from '../components/cards/TourCard.astro';
+import FaqList from '../components/sections/FaqList.astro';
+import CtaBand from '../components/sections/CtaBand.astro';
+import LodgeSection from '../components/lodge/LodgeSection.astro';
+import { localeMeta, type Locale } from '../i18n/config';
+import { getAlternates } from '../i18n/routes';
+import { useTranslations } from '../i18n/ui';
+import { getTours, pending, tourPath, tourQuotePath } from '../lib/tours';
+import { site } from '../config/site';
+
+interface Props {
+	lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const entry = await getEntry('toursPage', lang);
+if (!entry) throw new Error(`Falta src/content/tours-page/${lang}.json`);
+const c = entry.data;
+
+const tours = await getTours();
+const alternates = getAlternates('tours');
+const siteUrl = Astro.site ?? Astro.url;
+
+const rows = [
+	{ label: c.comparison.rows.length, value: (d: (typeof tours)[number]['data']) => `${pending(d.lengthFt)} ${t('tour.feet')}` },
+	{ label: c.comparison.rows.anglers, value: (d: (typeof tours)[number]['data']) => pending(d.maxAnglers) },
+	{ label: c.comparison.rows.engine, value: (d: (typeof tours)[number]['data']) => pending(d.specs.engine, '[Motor]') },
+	{ label: c.comparison.rows.fishingType, value: (d: (typeof tours)[number]['data']) => pending(d.specs.fishingType?.[lang], '—') },
+	{ label: c.comparison.rows.range, value: (d: (typeof tours)[number]['data']) => pending(d.specs.range?.[lang], '—') },
+	{ label: c.comparison.rows.idealFor, value: (d: (typeof tours)[number]['data']) => pending(d.specs.idealFor?.[lang], '—') },
+];
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'ItemList',
+	name: c.seo.title,
+	inLanguage: localeMeta[lang].htmlLang,
+	itemListElement: tours.map((tour, i) => ({
+		'@type': 'ListItem',
+		position: i + 1,
+		url: new URL(tourPath(lang, tour.id), siteUrl).href,
+		name: tour.data.name,
+	})),
+	provider: { '@type': 'TravelAgency', name: site.name },
+};
+---
+
+<BaseLayout
+	lang={lang}
+	title={c.seo.title}
+	description={c.seo.description}
+	alternates={alternates}
+	current="tours"
+	schema={schema}
+>
+	<!-- Encabezado -->
+	<section class="page-hero" aria-labelledby="tours-title">
+		<div class="container page-hero-inner">
+			<div class="page-hero-heading">
+				<p class="eyebrow">{c.hero.eyebrow}</p>
+				<h1 id="tours-title">{c.hero.title} <span class="accent">{c.hero.titleAccent}</span></h1>
+			</div>
+			<p class="page-hero-intro">{c.hero.intro}</p>
+		</div>
+	</section>
+
+	<!-- Tarjetas -->
+	<section class="tours-list">
+		<div class="container tours-grid">
+			{
+				tours.map((tour) => (
+					<TourCard
+						lang={lang}
+						title={tour.data.name}
+						href={tourPath(lang, tour.id)}
+						quoteHref={tourQuotePath(lang, tour.id)}
+						description={tour.data.summary[lang]}
+						category={tour.data.category?.[lang]}
+						lengthFt={tour.data.lengthFt}
+						maxAnglers={tour.data.maxAnglers}
+						image={tour.data.cover}
+						imageAlt={tour.data.coverAlt?.[lang]}
+						featured={tour.data.featured}
+						featuredLabel={c.featuredLabel}
+						headingLevel="h2"
+						showDetailsButton
+					/>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- Comparativa -->
+	<section class="section comparison" aria-labelledby="cmp-title">
+		<div class="container">
+			<SectionHeading id="cmp-title" eyebrow={c.comparison.eyebrow} title={c.comparison.title} />
+			<div class="table-scroll" role="region" aria-labelledby="cmp-title" tabindex="0">
+				<table>
+					<caption class="sr-only">{c.comparison.caption}</caption>
+					<thead>
+						<tr>
+							<td></td>
+							{
+								tours.map((tour) => (
+									<th scope="col">
+										<a href={tourPath(lang, tour.id)}>{tour.data.name}</a>
+										{tour.data.featured && <span class="badge">{c.featuredLabel}</span>}
+									</th>
+								))
+							}
+						</tr>
+					</thead>
+					<tbody>
+						{
+							rows.map((row) => (
+								<tr>
+									<th scope="row">{row.label}</th>
+									{tours.map((tour) => (
+										<td>{row.value(tour.data)}</td>
+									))}
+								</tr>
+							))
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section>
+
+	<!-- Hotel -->
+	<LodgeSection lang={lang} />
+
+	<!-- Incluye / no incluye -->
+	<section class="section" aria-labelledby="inc-title">
+		<div class="container">
+			<SectionHeading id="inc-title" eyebrow={c.includes.eyebrow} title={c.includes.title} />
+			<div class="includes-grid">
+				<div class="includes-box surface-inverse">
+					<h3>{c.includes.includedTitle}</h3>
+					<ul role="list">
+						{
+							c.includes.included.map((item) => (
+								<li>
+									<Icon name="check" size={22} strokeWidth={2.25} class="inc-icon" />
+									{item}
+								</li>
+							))
+						}
+					</ul>
+				</div>
+				<div class="includes-box includes-box--outline">
+					<h3>{c.includes.excludedTitle}</h3>
+					<ul role="list">
+						{
+							c.includes.excluded.map((item) => (
+								<li>
+									<svg class="inc-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14" /></svg>
+									{item}
+								</li>
+							))
+						}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Preguntas frecuentes -->
+	<section class="section faq-section" aria-labelledby="faq-title">
+		<div class="container split">
+			<SectionHeading id="faq-title" eyebrow={c.faq.eyebrow} title={c.faq.title} intro={c.faq.intro} />
+			<FaqList items={c.faq.items} class="faq-list" />
+		</div>
+	</section>
+
+	<CtaBand lang={lang} title={c.cta.title} titleAccent={c.cta.titleAccent} text={c.cta.text} />
+</BaseLayout>
+
+<style>
+	.page-hero {
+		padding-block: var(--space-24) var(--space-16);
+	}
+
+	.page-hero-inner {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: var(--space-10);
+	}
+
+	.page-hero-heading {
+		flex: 999 1 35rem;
+		min-width: 0;
+	}
+
+	.page-hero-heading h1 {
+		margin-top: var(--space-5);
+		font-size: clamp(3.5rem, 2rem + 5.5vw, 7rem);
+	}
+
+	.accent {
+		color: var(--color-cta);
+	}
+
+	.page-hero-intro {
+		flex: 1 1 20rem;
+		max-width: 26rem;
+		font-size: var(--text-lg);
+		color: var(--color-text-muted);
+	}
+
+	.tours-list {
+		padding-bottom: var(--section-space);
+	}
+
+	.tours-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 18.75rem), 1fr));
+		gap: var(--space-7);
+	}
+
+	/* --- Comparativa --- */
+	.comparison {
+		background: var(--color-surface);
+		border-block: 1px solid var(--color-border);
+	}
+
+	.table-scroll {
+		margin-top: var(--space-12);
+		overflow-x: auto;
+	}
+
+	table {
+		width: 100%;
+		min-width: 45rem;
+		border-collapse: collapse;
+	}
+
+	th,
+	td {
+		padding: var(--space-4) var(--space-5);
+		text-align: left;
+		vertical-align: top;
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	thead th,
+	thead td {
+		border-bottom: 3px solid var(--color-navy-900);
+	}
+
+	thead th {
+		font-family: var(--font-heading);
+		font-weight: var(--weight-black);
+		font-size: var(--text-xl);
+		text-transform: uppercase;
+		line-height: var(--leading-snug);
+	}
+
+	thead th a {
+		color: var(--color-heading);
+		text-decoration: none;
+	}
+
+	thead th a:hover {
+		text-decoration: underline;
+	}
+
+	.badge {
+		display: inline-block;
+		margin-left: var(--space-2);
+		padding: 2px var(--space-2);
+		border-radius: var(--radius-sm);
+		background: var(--color-cta);
+		color: var(--color-on-cta);
+		font-family: var(--font-text);
+		font-size: var(--text-xs);
+		letter-spacing: 0.1em;
+		vertical-align: middle;
+	}
+
+	tbody th {
+		width: 22%;
+		font-weight: var(--weight-semibold);
+	}
+
+	tbody td {
+		color: var(--color-text-muted);
+	}
+
+	/* --- Incluye --- */
+	.includes-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+		gap: var(--space-7);
+		margin-top: var(--space-12);
+	}
+
+	.includes-box {
+		padding: var(--space-10);
+		border-radius: var(--radius-lg);
+	}
+
+	.includes-box--outline {
+		border: 1px solid var(--color-border-strong);
+		color: var(--color-text-muted);
+	}
+
+	.includes-box h3 {
+		font-size: var(--text-2xl);
+		color: var(--color-heading);
+	}
+
+	.includes-box ul {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
+		margin-top: var(--space-6);
+	}
+
+	.includes-box li {
+		display: flex;
+		gap: var(--space-3);
+	}
+
+	.includes-box :global(.inc-icon) {
+		flex-shrink: 0;
+		margin-top: 3px;
+	}
+
+	.surface-inverse :global(.inc-icon) {
+		color: var(--color-inverse-accent);
+	}
+
+	/* --- FAQ --- */
+	.faq-section {
+		padding-top: 0;
+	}
+
+	.split {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-16);
+	}
+
+	.split > :global(.section-heading) {
+		flex: 1 1 20rem;
+		max-width: 25rem;
+	}
+
+	.split > :global(.faq-list) {
+		flex: 999 1 35rem;
+		min-width: 0;
+	}
+</style>

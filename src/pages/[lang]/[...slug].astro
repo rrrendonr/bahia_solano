@@ -1,0 +1,49 @@
+---
+/**
+ * Ruta dinámica que genera las páginas internas en ambos idiomas con su slug traducido
+ * (p. ej. /es/sobre-nosotros/ y /en/about-us/) y el detalle de cada tour
+ * (/es/tours/bote-1/). Los slugs vienen de src/i18n/routes.ts y de la colección de tours.
+ */
+import type { GetStaticPaths } from 'astro';
+import AboutPage from '../../views/AboutPage.astro';
+import ToursPage from '../../views/ToursPage.astro';
+import TourDetailPage from '../../views/TourDetailPage.astro';
+import ContactPage from '../../views/ContactPage.astro';
+import { isLocale, locales } from '../../i18n/config';
+import { dynamicPages, routes, type DynamicPageKey } from '../../i18n/routes';
+import { getTours, type Tour } from '../../lib/tours';
+
+export const getStaticPaths = (async () => {
+	const tours = await getTours();
+
+	return locales.flatMap((lang) => [
+		// Páginas fijas
+		...dynamicPages.map((page) => ({
+			params: { lang, slug: routes[page][lang] },
+			props: { page } as const,
+		})),
+		// Detalle de cada tour
+		...tours.map((tour) => ({
+			params: { lang, slug: `${routes.tours[lang]}/${tour.id}` },
+			props: { page: 'tourDetail', tour } as const,
+		})),
+	]);
+}) satisfies GetStaticPaths;
+
+type PageProps = { page: DynamicPageKey } | { page: 'tourDetail'; tour: Tour };
+
+const views = {
+	about: AboutPage,
+	tours: ToursPage,
+	contact: ContactPage,
+} satisfies Record<DynamicPageKey, unknown>;
+
+const { lang } = Astro.params;
+const props = Astro.props as PageProps;
+
+if (!isLocale(lang)) throw new Error(`Idioma no soportado: ${lang}`);
+
+const View = props.page === 'tourDetail' ? null : views[props.page];
+---
+
+{props.page === 'tourDetail' ? <TourDetailPage lang={lang} tour={props.tour} /> : View && <View lang={lang} />}

@@ -1,11 +1,26 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+/**
+ * La raíz redirige al idioma por defecto.
+ * En hosting estático se genera una redirección con meta refresh;
+ * al desplegar conviene configurar además un 301 de "/" a "/es/" en el hosting.
+ */
+import { defaultLocale } from '../i18n/config';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const target = `/${defaultLocale}/`;
+const canonical = new URL(target, Astro.site ?? Astro.url).href;
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta http-equiv="refresh" content={`0;url=${target}`} />
+		<meta name="robots" content="noindex, follow" />
+		<link rel="canonical" href={canonical} />
+		<title>Bahía Solano Pesca</title>
+	</head>
+	<body>
+		<a href={target}>Bahía Solano Pesca</a>
+	</body>
+</html>

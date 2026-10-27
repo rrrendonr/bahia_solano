@@ -1,0 +1,207 @@
+---
+import Icon from '../ui/Icon.astro';
+import { site, type SocialNetwork } from '../../config/site';
+import type { Locale } from '../../i18n/config';
+import { localizePath, type RouteKey } from '../../i18n/routes';
+import { useTranslations } from '../../i18n/ui';
+
+interface Props {
+	lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+
+const navItems: { key: RouteKey; label: string }[] = [
+	{ key: 'home', label: t('nav.home') },
+	{ key: 'about', label: t('nav.about') },
+	{ key: 'tours', label: t('nav.tours') },
+	{ key: 'contact', label: t('nav.contact') },
+];
+
+const socialLabels: Record<SocialNetwork, string> = {
+	instagram: 'Instagram',
+	facebook: 'Facebook',
+	youtube: 'YouTube',
+};
+
+const socials = (Object.entries(site.social) as [SocialNetwork, string][]).filter(
+	([, url]) => url,
+);
+
+const { whatsapp, email } = site.contact;
+---
+
+<footer class="site-footer surface-inverse">
+	<div class="container">
+		<div class="footer-grid">
+			<div class="footer-brand">
+				<p class="brand-text">Bahía Solano <span class="brand-accent">Pesca</span></p>
+				<p class="muted footer-location">
+					<Icon name="map-pin" size={18} />
+					{t('footer.location')}
+				</p>
+			</div>
+
+			<nav aria-label={t('footer.navLabel')}>
+				<ul role="list" class="footer-links">
+					{
+						navItems.map((item) => (
+							<li>
+								<a href={localizePath(item.key, lang)}>{item.label}</a>
+							</li>
+						))
+					}
+				</ul>
+			</nav>
+
+			{
+				(whatsapp || email) && (
+					<div class="footer-contact">
+						<p class="footer-heading">{t('footer.contact')}</p>
+						<ul role="list" class="footer-links">
+							{whatsapp && (
+								<li>
+									<a href={`https://wa.me/${whatsapp}`} rel="noopener" target="_blank">
+										<Icon name="message" size={18} />
+										WhatsApp
+									</a>
+								</li>
+							)}
+							{email && (
+								<li>
+									<a href={`mailto:${email}`}>
+										<Icon name="mail" size={18} />
+										{email}
+									</a>
+								</li>
+							)}
+						</ul>
+					</div>
+				)
+			}
+
+			{
+				socials.length > 0 && (
+					<nav aria-label={t('footer.social')}>
+						<ul role="list" class="social-list">
+							{socials.map(([network, url]) => (
+								<li>
+									<a
+										class="social-link"
+										href={url}
+										rel="noopener"
+										target="_blank"
+										aria-label={socialLabels[network]}
+									>
+										<Icon name={network} size={20} strokeWidth={2} />
+									</a>
+								</li>
+							))}
+						</ul>
+					</nav>
+				)
+			}
+		</div>
+
+		<p class="footer-legal">© {year} {site.name}. {t('footer.rights')}</p>
+	</div>
+</footer>
+
+<style>
+	.site-footer {
+		background: var(--color-inverse-bg-deep);
+		padding-block: var(--space-16) var(--space-8);
+	}
+
+	.footer-grid {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		gap: var(--space-10) var(--space-12);
+	}
+
+	.footer-brand {
+		flex: 1 1 16rem;
+	}
+
+	.brand-text {
+		font-family: var(--font-heading);
+		font-weight: var(--weight-black);
+		font-size: 1.75rem;
+		line-height: 1;
+		text-transform: uppercase;
+		color: var(--color-inverse-text);
+	}
+
+	.brand-accent {
+		color: var(--color-inverse-accent);
+	}
+
+	.footer-location {
+		display: flex;
+		align-items: center;
+		gap: var(--space-2);
+		margin-top: var(--space-3);
+		font-size: var(--text-sm);
+	}
+
+	.footer-heading {
+		margin-bottom: var(--space-2);
+		font-size: var(--text-sm);
+		font-weight: var(--weight-bold);
+		letter-spacing: var(--tracking-caps);
+		text-transform: uppercase;
+		color: var(--color-inverse-accent);
+	}
+
+	.footer-links a {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-2);
+		min-height: var(--tap-target);
+		color: var(--color-inverse-text-muted);
+		text-decoration: none;
+		transition: color var(--duration-hover) var(--ease-out);
+	}
+
+	.social-list {
+		display: flex;
+		gap: var(--space-3);
+	}
+
+	.social-link {
+		display: grid;
+		place-items: center;
+		width: var(--tap-target);
+		height: var(--tap-target);
+		border: 1px solid var(--color-inverse-border);
+		border-radius: var(--radius-full);
+		color: var(--color-inverse-text);
+		transition:
+			background-color var(--duration-hover) var(--ease-out),
+			transform var(--duration-press) var(--ease-out);
+	}
+
+	.social-link:active {
+		transform: scale(0.97);
+	}
+
+	@media (hover: hover) and (pointer: fine) {
+		.footer-links a:hover {
+			color: var(--color-inverse-text);
+		}
+		.social-link:hover {
+			background: rgb(250 249 246 / 0.1);
+		}
+	}
+
+	.footer-legal {
+		margin-top: var(--space-12);
+		padding-top: var(--space-6);
+		border-top: 1px solid var(--color-inverse-border);
+		font-size: var(--text-sm);
+		color: var(--color-inverse-text-muted);
+	}
+</style>

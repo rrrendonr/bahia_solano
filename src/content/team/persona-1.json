@@ -1,0 +1,7 @@
+{
+	"name": "[Nombre 1]",
+	"order": 1,
+	"role": { "es": "Capitán", "en": "Captain" },
+	"experience": { "es": "[N] años en el mar", "en": "[N] years at sea" },
+	"bio": { "es": "[Una línea personal: su especie favorita, de dónde es.]", "en": "[A personal line: favorite species, where they're from.]" }
+}

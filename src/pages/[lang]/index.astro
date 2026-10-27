@@ -1,0 +1,319 @@
+---
+/**
+ * Página DEMO del sistema de diseño. Muestra los componentes con contenido provisional.
+ * Se reemplazará por la página de Inicio definitiva en el siguiente paso.
+ */
+import { getImage } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import heroImage from '../../assets/images/hero.jpg';
+import heroMobileImage from '../../assets/images/hero-mobile.jpg';
+import ArtDirectedImage from '../../components/ui/ArtDirectedImage.astro';
+import Button from '../../components/ui/Button.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import StepCard from '../../components/cards/StepCard.astro';
+import TourCard from '../../components/cards/TourCard.astro';
+import TestimonialCard from '../../components/cards/TestimonialCard.astro';
+import { getLangStaticPaths, isLocale, localeMeta } from '../../i18n/config';
+import { getAlternates, localizePath } from '../../i18n/routes';
+import { useTranslations } from '../../i18n/ui';
+import { site } from '../../config/site';
+
+export const getStaticPaths = getLangStaticPaths;
+
+const { lang } = Astro.params;
+if (!isLocale(lang)) throw new Error(`Idioma no soportado: ${lang}`);
+
+const t = useTranslations(lang);
+const alternates = getAlternates('home');
+
+const content = {
+	es: {
+		title: 'Pesca deportiva en Bahía Solano, Pacífico colombiano',
+		description:
+			'Paquetes de pesca deportiva en Bahía Solano: vuelo desde Medellín, hospedaje en el Darien Lodge y bote con tripulación, guía y equipo.',
+		heroEyebrow: 'Pacífico colombiano · Chocó',
+		heroTitle: 'Pesca donde la selva se tira',
+		heroTitleAccent: 'al mar',
+		heroText:
+			'Paquetes de pesca deportiva en Bahía Solano. Vuelo desde Medellín, hospedaje en el Darien Lodge y bote con tripulación, guía y equipo. Tú solo llegas a pescar.',
+		heroSecondary: 'Conoce los tours',
+		heroAlt: 'Pesca deportiva a bordo de un bote en el mar Pacífico',
+		stepsEyebrow: 'El paquete',
+		stepsTitle: 'De Medellín a la línea de pesca, sin vueltas',
+		stepsIntro:
+			'Armamos el viaje completo para que no tengas que coordinar aerolínea, hotel y lancha por separado.',
+		steps: [
+			{ icon: 'plane', title: 'Vuelo desde Medellín', text: 'Ida y regreso a Bahía Solano.' },
+			{ icon: 'house', title: 'Darien Lodge', text: 'Hospedaje durante todo el viaje.' },
+			{ icon: 'sailboat', title: 'Bote con tripulación', text: 'Tres botes para elegir, con capitán, tripulación y guía.' },
+			{ icon: 'fish', title: 'Equipo de pesca', text: 'Cañas, carretes y señuelos incluidos.' },
+		],
+		toursEyebrow: 'Elige tu bote',
+		toursTitle: 'Tres botes, tres maneras de salir al mar',
+		featured: 'El más pedido',
+		testimonialsEyebrow: 'Quienes ya fueron',
+	},
+	en: {
+		title: 'Sport fishing in Bahía Solano, Colombian Pacific',
+		description:
+			'Sport fishing packages in Bahía Solano: flights from Medellín, stay at Darien Lodge, and a boat with crew, guide and tackle.',
+		heroEyebrow: 'Colombian Pacific · Chocó',
+		heroTitle: 'Fish where the jungle meets',
+		heroTitleAccent: 'the sea',
+		heroText:
+			'Sport fishing packages in Bahía Solano. Flights from Medellín, a stay at Darien Lodge, and a boat with crew, guide and tackle. You just show up and fish.',
+		heroSecondary: 'See the tours',
+		heroAlt: 'Sport fishing on board a boat in the Pacific Ocean',
+		stepsEyebrow: 'The package',
+		stepsTitle: 'From Medellín to the fishing line, hassle-free',
+		stepsIntro:
+			'We put the whole trip together, so you don’t have to book flights, lodging and boat separately.',
+		steps: [
+			{ icon: 'plane', title: 'Flights from Medellín', text: 'Round trip to Bahía Solano.' },
+			{ icon: 'house', title: 'Darien Lodge', text: 'Lodging for the whole trip.' },
+			{ icon: 'sailboat', title: 'Boat with crew', text: 'Three boats to choose from, with captain, crew and guide.' },
+			{ icon: 'fish', title: 'Fishing tackle', text: 'Rods, reels and lures included.' },
+		],
+		toursEyebrow: 'Choose your boat',
+		toursTitle: 'Three boats, three ways out to sea',
+		featured: 'Most popular',
+		testimonialsEyebrow: 'From our guests',
+	},
+} as const;
+
+const c = content[lang];
+
+// Datos provisionales: se moverán a una colección de contenido en el siguiente paso.
+const demoTours = [1, 2, 3].map((n) => ({
+	slug: `bote-${n}`,
+	title: `[Bote ${n}]`,
+	description: lang === 'es' ? '[Para quién es este bote y qué pesca permite.]' : '[Who this boat is for and what it can fish.]',
+	category: lang === 'es' ? '[Categoría]' : '[Category]',
+	featured: n === 2,
+}));
+
+// Imagen para redes sociales (1200×630) generada a partir de la foto del hero
+const ogImage = await getImage({ src: heroImage, width: 1200, height: 630, fit: 'cover', format: 'jpg' });
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'TravelAgency',
+	name: site.name,
+	url: new URL(alternates[lang], Astro.site).href,
+	inLanguage: localeMeta[lang].htmlLang,
+	address: {
+		'@type': 'PostalAddress',
+		addressLocality: site.locality,
+		addressRegion: site.region,
+		addressCountry: site.country,
+	},
+	areaServed: site.locality,
+};
+---
+
+<BaseLayout
+	lang={lang}
+	title={c.title}
+	description={c.description}
+	alternates={alternates}
+	current="home"
+	schema={schema}
+	image={ogImage.src}
+	imageAlt={c.heroAlt}
+>
+	<!-- Hero -->
+	<section class="hero surface-inverse" aria-labelledby="hero-title">
+		<div class="hero-media">
+			<ArtDirectedImage
+				desktop={heroImage}
+				mobile={heroMobileImage}
+				alt={c.heroAlt}
+				priority
+				class="hero-img"
+			/>
+			<div class="hero-scrim" aria-hidden="true"></div>
+		</div>
+		<div class="container hero-content">
+			<p class="eyebrow">{c.heroEyebrow}</p>
+			<h1 id="hero-title">{c.heroTitle} <span class="accent">{c.heroTitleAccent}</span></h1>
+			<p class="hero-text">{c.heroText}</p>
+			<div class="hero-actions">
+				<Button href={localizePath('contact', lang)}>{t('cta.quote')}</Button>
+				<Button href={localizePath('tours', lang)} variant="ghost">{c.heroSecondary}</Button>
+			</div>
+		</div>
+	</section>
+
+	<!-- Pasos (StepCard) -->
+	<section class="section" aria-labelledby="steps-title">
+		<div class="container split">
+			<SectionHeading id="steps-title" eyebrow={c.stepsEyebrow} title={c.stepsTitle} intro={c.stepsIntro} />
+			<ol role="list" class="steps-grid">
+				{
+					c.steps.map((step, i) => (
+						<StepCard number={String(i + 1).padStart(2, '0')} icon={step.icon} title={step.title} text={step.text} />
+					))
+				}
+			</ol>
+		</div>
+	</section>
+
+	<!-- Tours (TourCard) -->
+	<section class="section section--flush-top" aria-labelledby="tours-title">
+		<div class="container">
+			<SectionHeading id="tours-title" eyebrow={c.toursEyebrow} title={c.toursTitle} />
+			<div class="tours-grid">
+				{
+					demoTours.map((tour) => (
+						<TourCard
+							lang={lang}
+							title={tour.title}
+							href={localizePath('tours', lang, tour.slug)}
+							quoteHref={`${localizePath('contact', lang)}?tour=${tour.slug}`}
+							description={tour.description}
+							category={tour.category}
+							featured={tour.featured}
+							featuredLabel={c.featured}
+						/>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- Testimonios (TestimonialCard) -->
+	<section class="section testimonials" aria-labelledby="testimonials-title">
+		<div class="container">
+			<h2 id="testimonials-title" class="eyebrow">{c.testimonialsEyebrow}</h2>
+			<div class="testimonials-grid">
+				<TestimonialCard variant="featured" quote="[Testimonio destacado]" name="[Nombre]" origin="[Ciudad, país]" />
+				<TestimonialCard quote="[Segundo testimonio]" name="[Nombre]" origin="[Ciudad, país]" />
+			</div>
+		</div>
+	</section>
+</BaseLayout>
+
+<style>
+	.hero {
+		position: relative;
+		display: flex;
+		align-items: flex-end;
+		min-height: min(47.5rem, 92svh);
+		overflow: hidden;
+	}
+
+	.hero-media {
+		position: absolute;
+		inset: 0;
+		background-color: var(--color-navy-900);
+	}
+
+	.hero-media :global(picture) {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+
+	.hero-media :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		/* Escritorio: mantiene el bote a la vista cuando la foto se recorta */
+		object-position: 62% 60%;
+	}
+
+	/* Celular: foto vertical, encuadre en el pescador y la caña */
+	@media (max-width: 47.99rem) {
+		.hero-media :global(img) {
+			object-position: 40% 55%;
+		}
+	}
+
+	/* Degradado azul para que el texto blanco se lea sobre el cielo claro */
+	.hero-scrim {
+		position: absolute;
+		inset: 0;
+		background:
+			linear-gradient(to top, rgb(0 26 56 / 0.92) 0%, rgb(0 26 56 / 0.7) 40%, rgb(0 26 56 / 0.5) 75%, rgb(0 26 56 / 0.45) 100%),
+			linear-gradient(to right, rgb(0 26 56 / 0.6) 0%, rgb(0 26 56 / 0) 70%);
+	}
+
+	.hero-content {
+		position: relative;
+		padding-block: var(--space-30) var(--space-16);
+	}
+
+	.hero h1 {
+		max-width: 15ch;
+		margin-top: var(--space-5);
+	}
+
+	.hero .accent {
+		color: var(--color-cta);
+	}
+
+	.hero-text {
+		max-width: 35rem;
+		margin-top: var(--space-7);
+		font-size: var(--text-lg);
+		color: var(--color-inverse-text-muted);
+	}
+
+	.hero-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-4);
+		margin-top: var(--space-8);
+	}
+
+	.split {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-16);
+	}
+
+	.split > :global(.section-heading) {
+		flex: 1 1 20rem;
+		max-width: 26rem;
+	}
+
+	.steps-grid {
+		flex: 999 1 35rem;
+		min-width: 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+		border-top: 3px solid var(--color-navy-900);
+	}
+
+	.section--flush-top {
+		padding-top: 0;
+	}
+
+	.tours-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 18.75rem), 1fr));
+		gap: var(--space-7);
+		margin-top: var(--space-12);
+	}
+
+	.testimonials {
+		background: var(--color-surface-muted);
+	}
+
+	.testimonials .eyebrow {
+		color: var(--color-teal-800);
+	}
+
+	.testimonials-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 18.75rem), 1fr));
+		gap: var(--space-12);
+		margin-top: var(--space-6);
+	}
+
+	@media (min-width: 64rem) {
+		.testimonials-grid {
+			grid-template-columns: 2fr 1fr;
+		}
+	}
+</style>

@@ -1,0 +1,122 @@
+/* ==========================================================================
+   Bahía Solano Pesca — Design tokens
+   Paleta de marca: #002b5b (primario) · #00a8b5 (secundario) · #ff6b35 (terciario) · #faf9f6 (neutral)
+   Los tonos derivados (teal-700, teal-800, slate-600, navy-950) existen para cumplir
+   contraste WCAG AA en texto pequeño sobre fondo claro.
+   ========================================================================== */
+
+:root {
+	/* ---------- Paleta base ---------- */
+	--color-navy-950: #001a38;
+	--color-navy-900: #002b5b; /* primario */
+	--color-navy-800: #0a3d75;
+	--color-navy-700: #0d4a85;
+
+	--color-teal-500: #00a8b5; /* secundario — decorativo / texto sobre azul */
+	--color-teal-700: #00808a; /* texto acento sobre fondo claro (4.5:1) */
+	--color-teal-800: #00585f;
+	--color-teal-50: #e6f6f7;
+
+	--color-orange-500: #ff6b35; /* terciario — solo CTAs */
+	--color-orange-400: #ff8257;
+
+	--color-sand-50: #faf9f6; /* neutral */
+	--color-white: #ffffff;
+	--color-slate-600: #3d4f66;
+
+	/* ---------- Roles semánticos (tema claro) ---------- */
+	--color-bg: var(--color-sand-50);
+	--color-surface: var(--color-white);
+	--color-surface-muted: var(--color-teal-50);
+	--color-heading: var(--color-navy-900);
+	--color-text: var(--color-navy-900);
+	--color-text-muted: var(--color-slate-600);
+	--color-accent: var(--color-teal-700);
+	--color-accent-strong: var(--color-teal-800);
+	--color-accent-decor: var(--color-teal-500);
+	--color-border: rgb(0 43 91 / 0.12);
+	--color-border-strong: rgb(0 43 91 / 0.25);
+
+	--color-cta: var(--color-orange-500);
+	--color-cta-hover: var(--color-orange-400);
+	--color-on-cta: var(--color-navy-900); /* azul sobre naranja: 4.9:1 */
+
+	--color-focus: var(--color-teal-700);
+
+	/* Superficie invertida (secciones azules) */
+	--color-inverse-bg: var(--color-navy-900);
+	--color-inverse-bg-deep: var(--color-navy-950);
+	--color-inverse-text: var(--color-sand-50);
+	--color-inverse-text-muted: rgb(250 249 246 / 0.82);
+	--color-inverse-accent: var(--color-teal-500); /* 4.8:1 sobre navy */
+	--color-inverse-border: rgb(250 249 246 / 0.2);
+
+	/* ---------- Tipografía ---------- */
+	/* --font-display y --font-body los define la API de fuentes de Astro (astro.config.mjs) */
+	--font-heading: var(--font-display), 'Arial Narrow', sans-serif;
+	--font-text: var(--font-body), sans-serif;
+
+	/* Escala modular fluida (base 17px) */
+	--text-xs: 0.8125rem; /* 13 */
+	--text-sm: 0.9375rem; /* 15 */
+	--text-base: 1.0625rem; /* 17 */
+	--text-lg: 1.25rem; /* 20 */
+	--text-xl: clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem); /* 24 → 30 */
+	--text-2xl: clamp(1.875rem, 1.5rem + 1.4vw, 2.5rem); /* 30 → 40 */
+	--text-3xl: clamp(2.75rem, 1.9rem + 3.2vw, 4.5rem); /* 44 → 72 */
+	--text-4xl: clamp(3.5rem, 1.9rem + 6.5vw, 7.75rem); /* 56 → 124 */
+
+	--leading-display: 0.92;
+	--leading-snug: 1.15;
+	--leading-body: 1.6;
+
+	--tracking-display: 0.01em;
+	--tracking-button: 0.06em;
+	--tracking-caps: 0.18em;
+
+	--weight-regular: 400;
+	--weight-semibold: 600;
+	--weight-bold: 700;
+	--weight-black: 800;
+
+	/* ---------- Espaciado (escala de 4pt) ---------- */
+	--space-1: 0.25rem; /* 4 */
+	--space-2: 0.5rem; /* 8 */
+	--space-3: 0.75rem; /* 12 */
+	--space-4: 1rem; /* 16 */
+	--space-5: 1.25rem; /* 20 */
+	--space-6: 1.5rem; /* 24 */
+	--space-7: 1.75rem; /* 28 */
+	--space-8: 2rem; /* 32 */
+	--space-10: 2.5rem; /* 40 */
+	--space-12: 3rem; /* 48 */
+	--space-16: 4rem; /* 64 */
+	--space-20: 5rem; /* 80 */
+	--space-24: 6rem; /* 96 */
+	--space-30: 7.5rem; /* 120 */
+
+	--section-space: clamp(var(--space-20), 6vw + 2rem, var(--space-30));
+
+	/* ---------- Layout ---------- */
+	--container-max: 80rem; /* 1280 */
+	--gutter: clamp(1rem, 4vw, 1.5rem);
+	--tap-target: 2.75rem; /* 44px */
+
+	/* ---------- Bordes y sombras ---------- */
+	--radius-sm: 3px;
+	--radius-md: 4px;
+	--radius-lg: 6px;
+	--radius-full: 999px;
+	--shadow-float: 0 8px 24px rgb(0 43 91 / 0.3);
+
+	/* ---------- Movimiento ---------- */
+	--ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+	--duration-press: 140ms;
+	--duration-hover: 160ms;
+	--duration-menu: 220ms;
+	--duration-reveal: 600ms;
+
+	/* ---------- Capas ---------- */
+	--z-float: 40;
+	--z-header: 50;
+}

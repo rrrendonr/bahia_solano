@@ -1,0 +1,58 @@
+---
+import Icon, { type IconName } from '../ui/Icon.astro';
+
+interface Props {
+	/** Número visible, p. ej. "01" */
+	number: string;
+	icon: IconName;
+	title: string;
+	text: string;
+	headingLevel?: 'h3' | 'h4';
+}
+
+const { number, icon, title, text, headingLevel: Heading = 'h3' } = Astro.props;
+---
+
+<li class="step-card">
+	<div class="step-top">
+		<span class="step-number" aria-hidden="true">{number}</span>
+		<Icon name={icon} size={34} class="step-icon" />
+	</div>
+	<Heading class="step-title">{title}</Heading>
+	<p class="step-text">{text}</p>
+</li>
+
+<style>
+	.step-card {
+		padding: var(--space-7) var(--space-7) var(--space-8) 0;
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.step-top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.step-number {
+		font-family: var(--font-heading);
+		font-weight: var(--weight-black);
+		font-size: 3.5rem;
+		line-height: 1;
+		color: var(--color-cta);
+	}
+
+	.step-top :global(.step-icon) {
+		color: var(--color-accent);
+	}
+
+	.step-title {
+		margin-top: var(--space-5);
+		font-size: var(--text-xl);
+	}
+
+	.step-text {
+		margin-top: var(--space-3);
+		color: var(--color-text-muted);
+	}
+</style>

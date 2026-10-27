@@ -1,0 +1,357 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import Icon from '../components/ui/Icon.astro';
+import TeamCard from '../components/cards/TeamCard.astro';
+import CtaBand from '../components/sections/CtaBand.astro';
+import { localeMeta, type Locale } from '../i18n/config';
+import { getAlternates } from '../i18n/routes';
+import { site } from '../config/site';
+
+interface Props {
+	lang: Locale;
+}
+
+const { lang } = Astro.props;
+
+const entry = await getEntry('about', lang);
+if (!entry) throw new Error(`Falta src/content/about/${lang}.json`);
+const c = entry.data;
+
+const team = (await getCollection('team')).sort((a, b) => a.data.order - b.data.order);
+
+const alternates = getAlternates('about');
+const pageUrl = new URL(alternates[lang], Astro.site).href;
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'AboutPage',
+	name: c.seo.title,
+	description: c.seo.description,
+	url: pageUrl,
+	inLanguage: localeMeta[lang].htmlLang,
+	about: {
+		'@type': 'TravelAgency',
+		name: site.name,
+		url: new URL(`/${lang}/`, Astro.site).href,
+		address: {
+			'@type': 'PostalAddress',
+			addressLocality: site.locality,
+			addressRegion: site.region,
+			addressCountry: site.country,
+		},
+	},
+};
+---
+
+<BaseLayout
+	lang={lang}
+	title={c.seo.title}
+	description={c.seo.description}
+	alternates={alternates}
+	current="about"
+	schema={schema}
+>
+	<!-- Encabezado de página -->
+	<section class="page-hero" aria-labelledby="about-title">
+		<div class="container page-hero-top">
+			<div class="page-hero-heading">
+				<p class="eyebrow">{c.hero.eyebrow}</p>
+				<h1 id="about-title">
+					{c.hero.title} <span class="accent">{c.hero.titleAccent}</span>
+				</h1>
+			</div>
+			<p class="page-hero-intro">{c.hero.intro}</p>
+		</div>
+		<div class="container">
+			<!-- TODO: reemplazar por <Image> con la foto real (priority: es el elemento LCP) -->
+			<div class="page-hero-media media-placeholder" aria-hidden="true">{c.hero.imageLabel}</div>
+		</div>
+	</section>
+
+	<!-- Historia -->
+	<section class="section" aria-labelledby="story-title">
+		<div class="container split">
+			<SectionHeading id="story-title" eyebrow={c.story.eyebrow} title={c.story.title} />
+			<div class="story-body">
+				{c.story.paragraphs.map((p) => <p>{p}</p>)}
+				{
+					c.story.milestones.length > 0 && (
+						<ol role="list" class="milestones">
+							{c.story.milestones.map((m) => (
+								<li>
+									<span class="milestone-year">{m.year}</span>
+									<span class="milestone-label">{m.label}</span>
+								</li>
+							))}
+						</ol>
+					)
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- Por qué elegirnos -->
+	<section class="section surface-inverse" aria-labelledby="values-title">
+		<div class="container">
+			<SectionHeading id="values-title" eyebrow={c.values.eyebrow} title={c.values.title} />
+			<ul role="list" class="values-grid">
+				{
+					c.values.items.map((item) => (
+						<li class="value-item">
+							<Icon name={item.icon} size={34} class="value-icon" />
+							<h3>{item.title}</h3>
+							<p>{item.text}</p>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</section>
+
+	<!-- Equipo -->
+	<section class="section" aria-labelledby="team-title">
+		<div class="container">
+			<div class="team-header">
+				<SectionHeading id="team-title" eyebrow={c.team.eyebrow} title={c.team.title} />
+				<p class="team-intro muted">{c.team.intro}</p>
+			</div>
+			<div class="team-grid">
+				{
+					team.map(({ data }) => (
+						<TeamCard
+							name={data.name}
+							role={data.role[lang]}
+							experience={data.experience?.[lang]}
+							bio={data.bio[lang]}
+							photo={data.photo}
+							photoAlt={data.photoAlt?.[lang]}
+						/>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- Destino -->
+	<section class="section destination" aria-labelledby="destination-title">
+		<div class="container destination-inner">
+			<div class="destination-media media-placeholder" aria-hidden="true">{c.destination.imageLabel}</div>
+			<div class="destination-copy">
+				<SectionHeading
+					id="destination-title"
+					eyebrow={c.destination.eyebrow}
+					title={c.destination.title}
+					intro={c.destination.text}
+				/>
+				<dl class="facts">
+					{
+						c.destination.facts.map((fact) => (
+							<div class="fact">
+								<dt>{fact.label}</dt>
+								<dd>{fact.value}</dd>
+							</div>
+						))
+					}
+				</dl>
+			</div>
+		</div>
+	</section>
+
+	<CtaBand lang={lang} title={c.cta.title} titleAccent={c.cta.titleAccent} text={c.cta.text} />
+</BaseLayout>
+
+<style>
+	/* --- Encabezado --- */
+	.page-hero {
+		padding-top: var(--space-24);
+	}
+
+	.page-hero-top {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: var(--space-10);
+	}
+
+	.page-hero-heading {
+		flex: 999 1 35rem;
+		min-width: 0;
+	}
+
+	.page-hero-heading h1 {
+		max-width: 14ch;
+		margin-top: var(--space-5);
+		font-size: clamp(3.5rem, 2rem + 5.5vw, 7rem);
+	}
+
+	.accent {
+		color: var(--color-cta);
+	}
+
+	.page-hero-intro {
+		flex: 1 1 20rem;
+		max-width: 25rem;
+		font-size: var(--text-lg);
+		color: var(--color-text-muted);
+	}
+
+	.page-hero-media {
+		margin-top: var(--space-16);
+		aspect-ratio: 4 / 3;
+		border-radius: var(--radius-lg);
+	}
+
+	@media (min-width: 48rem) {
+		.page-hero-media {
+			aspect-ratio: 16 / 7;
+		}
+	}
+
+	/* --- Historia --- */
+	.split {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-16);
+	}
+
+	.split > :global(.section-heading) {
+		flex: 1 1 20rem;
+		max-width: 26rem;
+	}
+
+	.story-body {
+		flex: 999 1 35rem;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-6);
+		font-size: var(--text-lg);
+		color: var(--color-text-muted);
+	}
+
+	.milestones {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+		margin-top: var(--space-6);
+		border-top: 3px solid var(--color-navy-900);
+	}
+
+	.milestones li {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+		padding: var(--space-5) var(--space-5) 0 0;
+	}
+
+	.milestone-year {
+		font-family: var(--font-heading);
+		font-weight: var(--weight-black);
+		font-size: 3rem;
+		line-height: 1;
+		color: var(--color-cta);
+	}
+
+	.milestone-label {
+		font-size: var(--text-base);
+	}
+
+	/* --- Valores --- */
+	.values-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+		margin-top: var(--space-12);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.value-item {
+		padding: var(--space-8) var(--space-8) var(--space-8) 0;
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.value-item :global(.value-icon) {
+		color: var(--color-accent);
+	}
+
+	.value-item h3 {
+		margin-top: var(--space-5);
+		font-size: var(--text-xl);
+		overflow-wrap: normal;
+		hyphens: auto;
+	}
+
+	.value-item p {
+		margin-top: var(--space-3);
+		color: var(--color-text-muted);
+	}
+
+	/* --- Equipo --- */
+	.team-header {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: var(--space-6);
+	}
+
+	.team-intro {
+		max-width: 24rem;
+	}
+
+	.team-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+		gap: var(--space-7);
+		margin-top: var(--space-12);
+	}
+
+	/* --- Destino --- */
+	.destination {
+		background: var(--color-surface-muted);
+		--color-accent: var(--color-teal-800);
+	}
+
+	.destination-inner {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-16);
+	}
+
+	.destination-media {
+		flex: 999 1 35rem;
+		min-width: 0;
+		min-height: clamp(18rem, 45vw, 34rem);
+		border-radius: var(--radius-lg);
+	}
+
+	.destination-copy {
+		flex: 1 1 20rem;
+		max-width: 29rem;
+	}
+
+	.facts {
+		margin-top: var(--space-8);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.fact {
+		display: flex;
+		justify-content: space-between;
+		gap: var(--space-4);
+		padding-block: var(--space-3);
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.fact dt {
+		font-weight: var(--weight-semibold);
+	}
+
+	.fact dd {
+		margin: 0;
+		text-align: right;
+		color: var(--color-text-muted);
+	}
+</style>

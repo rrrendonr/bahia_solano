@@ -1,0 +1,203 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Button from '../ui/Button.astro';
+import type { Locale } from '../../i18n/config';
+import { useTranslations } from '../../i18n/ui';
+
+interface Props {
+	lang: Locale;
+	title: string;
+	/** Página de detalle del tour */
+	href: string;
+	/** Enlace del botón Cotizar (contacto con el tour preseleccionado) */
+	quoteHref: string;
+	description: string;
+	category?: string;
+	lengthFt?: number;
+	maxAnglers?: number;
+	image?: ImageMetadata;
+	imageAlt?: string;
+	/** Resalta la tarjeta (fondo azul + etiqueta) */
+	featured?: boolean;
+	featuredLabel?: string;
+	headingLevel?: 'h2' | 'h3';
+	/** Muestra el botón secundario "Ver tour" junto a "Cotizar" */
+	showDetailsButton?: boolean;
+}
+
+const {
+	lang,
+	title,
+	href,
+	quoteHref,
+	description,
+	category,
+	lengthFt,
+	maxAnglers,
+	image,
+	imageAlt = '',
+	featured = false,
+	featuredLabel,
+	headingLevel: Heading = 'h3',
+	showDetailsButton = false,
+} = Astro.props;
+
+const t = useTranslations(lang);
+
+const specs = [
+	lengthFt ? `${lengthFt} ${t('tour.feet')}` : undefined,
+	maxAnglers ? t('tour.anglers', { n: maxAnglers }) : undefined,
+	t('tour.crew'),
+].filter(Boolean);
+
+const badge = featured && featuredLabel ? featuredLabel : category;
+---
+
+<article class:list={['tour-card', { 'tour-card--featured surface-inverse': featured }]}>
+	<div class="tour-media">
+		{
+			image ? (
+				<Image src={image} alt={imageAlt} widths={[400, 640, 960]} sizes="(min-width: 64rem) 400px, 100vw" />
+			) : (
+				<div class="media-placeholder" aria-hidden="true">[Foto: {title}]</div>
+			)
+		}
+	</div>
+
+	<div class="tour-body">
+		{badge && <span class:list={['tour-badge', { 'tour-badge--featured': featured }]}>{badge}</span>}
+		<Heading class="tour-title">
+			<a href={href}>{title}</a>
+		</Heading>
+		<p class="tour-specs">{specs.join(' · ')}</p>
+		<p class="tour-description">{description}</p>
+
+		<div class="tour-footer">
+			<Button href={quoteHref} size="sm" class="tour-cta">{t('cta.quoteShort')}</Button>
+			{
+				showDetailsButton && (
+					<Button href={href} size="sm" variant={featured ? 'ghost' : 'outline'} class="tour-cta">
+						{t('cta.viewTour')}
+					</Button>
+				)
+			}
+		</div>
+	</div>
+</article>
+
+<style>
+	.tour-card {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+	}
+
+	.tour-card--featured {
+		background: var(--color-inverse-bg);
+		border-color: transparent;
+	}
+
+	.tour-media {
+		aspect-ratio: 3 / 2;
+		overflow: hidden;
+	}
+
+	.tour-media :global(img),
+	.tour-media .media-placeholder {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform var(--duration-reveal) var(--ease-out);
+	}
+
+	.tour-card--featured .media-placeholder {
+		background-color: var(--color-navy-700);
+	}
+
+	.tour-body {
+		display: flex;
+		flex-direction: column;
+		flex-grow: 1;
+		gap: var(--space-3);
+		padding: var(--space-7);
+	}
+
+	.tour-badge {
+		align-self: flex-start;
+		padding: var(--space-1) var(--space-3);
+		border-radius: var(--radius-sm);
+		background: var(--color-teal-50);
+		color: var(--color-teal-800);
+		font-size: var(--text-xs);
+		font-weight: var(--weight-bold);
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+
+	.tour-badge--featured {
+		background: var(--color-cta);
+		color: var(--color-on-cta);
+	}
+
+	.tour-title {
+		font-size: var(--text-2xl);
+		font-weight: var(--weight-black);
+	}
+
+	/* El título enlaza al detalle; su área de clic cubre la tarjeta */
+	.tour-title a {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.tour-title a::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+	}
+
+	.tour-title a:focus-visible {
+		outline: none;
+	}
+
+	.tour-card:has(.tour-title a:focus-visible) {
+		outline: 3px solid var(--color-focus);
+		outline-offset: 3px;
+	}
+
+	.tour-specs {
+		font-weight: var(--weight-semibold);
+		color: var(--color-accent);
+	}
+
+	.tour-description {
+		color: var(--color-text-muted);
+	}
+
+	.tour-footer {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-3);
+		margin-top: auto;
+		padding-top: var(--space-5);
+		border-top: 1px solid var(--color-border);
+	}
+
+	/* El botón queda por encima del enlace de la tarjeta */
+	.tour-footer :global(.tour-cta) {
+		position: relative;
+		z-index: 1;
+	}
+
+	@media (hover: hover) and (pointer: fine) {
+		.tour-card:hover .tour-media :global(img),
+		.tour-card:hover .tour-media .media-placeholder {
+			transform: scale(1.03);
+		}
+	}
+</style>

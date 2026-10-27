@@ -1,0 +1,65 @@
+---
+import { defaultLocale, localeMeta, locales, type Locale } from '../../i18n/config';
+import { site } from '../../config/site';
+
+interface Props {
+	title: string;
+	description: string;
+	lang: Locale;
+	/** Ruta equivalente de esta página en cada idioma (ver getAlternates) */
+	alternates: Record<Locale, string>;
+	/** Imagen para redes sociales (URL absoluta o ruta desde /public) */
+	image?: string;
+	imageAlt?: string;
+	type?: 'website' | 'article';
+	noindex?: boolean;
+}
+
+const {
+	title,
+	description,
+	lang,
+	alternates,
+	image,
+	imageAlt,
+	type = 'website',
+	noindex = false,
+} = Astro.props;
+
+const siteUrl = Astro.site ?? Astro.url;
+const toAbsolute = (path: string) => new URL(path, siteUrl).href;
+
+const canonical = toAbsolute(alternates[lang]);
+const fullTitle = title.includes(site.name) ? title : `${title} | ${site.name}`;
+const ogImage = image ? toAbsolute(image) : undefined;
+const otherLocales = locales.filter((l) => l !== lang);
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex, follow" />}
+
+{
+	locales.map((l) => (
+		<link rel="alternate" hreflang={localeMeta[l].hreflang} href={toAbsolute(alternates[l])} />
+	))
+}
+<link rel="alternate" hreflang="x-default" href={toAbsolute(alternates[defaultLocale])} />
+
+<!-- Open Graph -->
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:locale" content={localeMeta[lang].ogLocale} />
+{otherLocales.map((l) => <meta property="og:locale:alternate" content={localeMeta[l].ogLocale} />)}
+{ogImage && <meta property="og:image" content={ogImage} />}
+{ogImage && imageAlt && <meta property="og:image:alt" content={imageAlt} />}
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+{ogImage && <meta name="twitter:image" content={ogImage} />}

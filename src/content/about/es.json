@@ -1,0 +1,58 @@
+{
+	"seo": {
+		"title": "Sobre nosotros",
+		"description": "Conoce a Bahía Solano Pesca: agencia de pesca deportiva en Bahía Solano, Chocó. Nuestra historia, el equipo de capitanes y guías, y el destino."
+	},
+	"hero": {
+		"eyebrow": "Sobre nosotros",
+		"title": "Somos de aquí.",
+		"titleAccent": "El mar también.",
+		"intro": "[Una o dos frases sobre quiénes son: agencia local de Bahía Solano dedicada a la pesca deportiva.]",
+		"imageLabel": "[Foto panorámica: la bahía con la selva y los botes]"
+	},
+	"story": {
+		"eyebrow": "Nuestra historia",
+		"title": "[Titular de la historia]",
+		"paragraphs": [
+			"[Cómo empezó la agencia: año, quién la fundó y por qué.]",
+			"[Qué los diferencia hoy: los botes, la relación con el Darien Lodge, la gente local que trabaja con ustedes.]"
+		],
+		"milestones": [
+			{ "year": "[Año]", "label": "[Hito: nace la agencia]" },
+			{ "year": "[Año]", "label": "[Hito: primer bote / alianza con el lodge]" },
+			{ "year": "[Año]", "label": "[Hito: hoy, tres botes]" }
+		]
+	},
+	"values": {
+		"eyebrow": "Por qué elegirnos",
+		"title": "Lo que no cambia en ningún viaje",
+		"items": [
+			{ "icon": "map-pin", "title": "Conocimiento local", "text": "[Guías y capitanes de la zona que saben dónde y cuándo está el pez.]" },
+			{ "icon": "shield", "title": "Seguridad", "text": "[Equipo de seguridad a bordo, permisos y protocolos.]" },
+			{ "icon": "fish", "title": "Pesca responsable", "text": "[Su política de captura y liberación o de cuidado de las especies.]" },
+			{ "icon": "check", "title": "Todo incluido", "text": "Vuelo desde Medellín, Darien Lodge, bote con tripulación, guía y equipo en un solo paquete." }
+		]
+	},
+	"team": {
+		"eyebrow": "El equipo",
+		"title": "Quienes te llevan al agua",
+		"intro": "[Una frase sobre el equipo: capitanes y guías de Bahía Solano.]"
+	},
+	"destination": {
+		"eyebrow": "El destino",
+		"title": "Bahía Solano, Chocó",
+		"text": "Al norte del Pacífico colombiano, donde la selva baja hasta el mar. No hay carretera: se llega en avión o por agua. [Completar con lo que quieran destacar del lugar.]",
+		"imageLabel": "[Foto aérea o mapa: Bahía Solano en el Pacífico chocoano]",
+		"facts": [
+			{ "label": "Cómo llegar", "value": "Vuelo desde Medellín (incluido)" },
+			{ "label": "Mejor temporada", "value": "[Meses]" },
+			{ "label": "Clima", "value": "[Temperatura / lluvias]" },
+			{ "label": "Además", "value": "[Ballenas, Utría, playas…]" }
+		]
+	},
+	"cta": {
+		"title": "Ya nos conoces.",
+		"titleAccent": "Ahora sal a pescar.",
+		"text": "Cuéntanos fechas y cuántos viajan. Te respondemos con disponibilidad y el precio del paquete."
+	}
+}

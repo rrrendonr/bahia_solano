@@ -1,0 +1,59 @@
+---
+import Icon from '../ui/Icon.astro';
+import { site } from '../../config/site';
+import type { Locale } from '../../i18n/config';
+import { localizePath } from '../../i18n/routes';
+import { useTranslations } from '../../i18n/ui';
+
+interface Props {
+	lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const { whatsapp } = site.contact;
+
+// Sin número configurado, el botón lleva a la página de contacto.
+const href = whatsapp ? `https://wa.me/${whatsapp}` : localizePath('contact', lang);
+const external = Boolean(whatsapp);
+---
+
+<a
+	class="whatsapp-float"
+	href={href}
+	aria-label={t('cta.whatsapp')}
+	target={external ? '_blank' : undefined}
+	rel={external ? 'noopener' : undefined}
+>
+	<Icon name="message" size={28} strokeWidth={2} />
+</a>
+
+<style>
+	.whatsapp-float {
+		position: fixed;
+		right: var(--space-6);
+		bottom: var(--space-6);
+		z-index: var(--z-float);
+		display: grid;
+		place-items: center;
+		width: 3.75rem;
+		height: 3.75rem;
+		border-radius: var(--radius-full);
+		background: var(--color-cta);
+		color: var(--color-on-cta);
+		box-shadow: var(--shadow-float);
+		transition:
+			transform var(--duration-press) var(--ease-out),
+			background-color var(--duration-hover) var(--ease-out);
+	}
+
+	.whatsapp-float:active {
+		transform: scale(0.97);
+	}
+
+	@media (hover: hover) and (pointer: fine) {
+		.whatsapp-float:hover {
+			background: var(--color-cta-hover);
+		}
+	}
+</style>

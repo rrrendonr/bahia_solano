@@ -1,0 +1,46 @@
+{
+	"seo": {
+		"title": "Contact",
+		"description": "Get a quote for your sport fishing trip to Bahía Solano, Colombia. Message us on WhatsApp or leave your details and we’ll reply with availability and price."
+	},
+	"hero": {
+		"eyebrow": "Contact",
+		"title": "Let’s talk about",
+		"titleAccent": "your trip.",
+		"intro": "Leave your details and the boat you like. We’ll reply with availability and the package price. [Usual response time.]"
+	},
+	"form": {
+		"title": "Request a quote",
+		"requiredNote": "Fields marked * are required.",
+		"name": "Name",
+		"email": "Email",
+		"phone": "Phone / WhatsApp",
+		"phonePlaceholder": "+1 555 000 0000",
+		"tour": "Tour you’re interested in",
+		"tourUndecided": "Not sure yet",
+		"tourHint": "Pre-selected if you came from a tour’s “Get a quote” button.",
+		"message": "Message",
+		"optional": "(optional)",
+		"messagePlaceholder": "Tentative dates, group size, questions…",
+		"submit": "Send request",
+		"whatsapp": "Send via WhatsApp",
+		"note": "“Send request” reaches us by email. “Send via WhatsApp” opens WhatsApp with your details already filled in. [Privacy note.]",
+		"emailSubject": "New quote request — Bahía Solano Pesca",
+		"whatsappTemplate": "Hi, I’d like a quote for a fishing trip.\nName: {name}\nEmail: {email}\nPhone: {phone}\nTour: {tour}\nMessage: {message}"
+	},
+	"channels": {
+		"title": "Reach us directly",
+		"whatsapp": "WhatsApp",
+		"email": "Email"
+	},
+	"faq": {
+		"eyebrow": "Before you write",
+		"title": "FAQ",
+		"linkLabel": "See all on Tours",
+		"fromTours": [
+			0,
+			2,
+			4
+		]
+	}
+}

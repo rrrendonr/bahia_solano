@@ -1,0 +1,294 @@
+---
+import { getEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import Icon from '../components/ui/Icon.astro';
+import ContactForm from '../components/contact/ContactForm.astro';
+import FaqList from '../components/sections/FaqList.astro';
+import { localeMeta, type Locale } from '../i18n/config';
+import { getAlternates, localizePath } from '../i18n/routes';
+import { getTours } from '../lib/tours';
+import { site } from '../config/site';
+
+interface Props {
+	lang: Locale;
+}
+
+const { lang } = Astro.props;
+
+const entry = await getEntry('contactPage', lang);
+if (!entry) throw new Error(`Falta src/content/contact-page/${lang}.json`);
+const c = entry.data;
+
+const toursText = await getEntry('toursPage', lang);
+const faqItems = c.faq.fromTours
+	.map((index) => toursText?.data.faq.items[index])
+	.filter((item): item is NonNullable<typeof item> => Boolean(item));
+
+const tours = (await getTours()).map((tour) => ({ id: tour.id, name: tour.data.name }));
+const alternates = getAlternates('contact');
+const siteUrl = Astro.site ?? Astro.url;
+
+const { whatsapp, email } = site.contact;
+const isDev = import.meta.env.DEV;
+const showChannels = Boolean(whatsapp || email || isDev);
+/** 573001234567 → +57 300 123 4567 (números colombianos); otros países: +<número> */
+const formatPhone = (n: string) =>
+	n.startsWith('57') && n.length === 12
+		? `+57 ${n.slice(2, 5)} ${n.slice(5, 8)} ${n.slice(8)}`
+		: `+${n}`;
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'ContactPage',
+	name: c.seo.title,
+	description: c.seo.description,
+	url: new URL(alternates[lang], siteUrl).href,
+	inLanguage: localeMeta[lang].htmlLang,
+	about: {
+		'@type': 'TravelAgency',
+		name: site.name,
+		url: new URL(`/${lang}/`, siteUrl).href,
+		...(email ? { email } : {}),
+		...(whatsapp ? { telephone: formatPhone(whatsapp) } : {}),
+		address: {
+			'@type': 'PostalAddress',
+			addressLocality: site.locality,
+			addressRegion: site.region,
+			addressCountry: site.country,
+		},
+	},
+};
+---
+
+<BaseLayout
+	lang={lang}
+	title={c.seo.title}
+	description={c.seo.description}
+	alternates={alternates}
+	current="contact"
+	schema={schema}
+>
+	<!-- Encabezado -->
+	<section class="page-hero" aria-labelledby="contact-title">
+		<div class="container page-hero-inner">
+			<div class="page-hero-heading">
+				<p class="eyebrow">{c.hero.eyebrow}</p>
+				<h1 id="contact-title">{c.hero.title} <span class="accent">{c.hero.titleAccent}</span></h1>
+			</div>
+			<p class="page-hero-intro">{c.hero.intro}</p>
+		</div>
+	</section>
+
+	<!-- Formulario + canales -->
+	<section id="formulario" class="contact-main">
+		<div class="container contact-grid">
+			<ContactForm lang={lang} labels={c.form} tours={tours} />
+
+			{
+				showChannels && (
+					<aside class="channels surface-inverse" aria-labelledby="channels-title">
+						<p id="channels-title" class="eyebrow">{c.channels.title}</p>
+						<ul role="list">
+							{(whatsapp || isDev) && (
+								<li>
+									<a
+										class="channel"
+										href={whatsapp ? `https://wa.me/${whatsapp}` : undefined}
+										target="_blank"
+										rel="noopener"
+									>
+										<span class="channel-icon channel-icon--cta">
+											<Icon name="message" size={22} strokeWidth={2} />
+										</span>
+										<span class="channel-text">
+											<span class="channel-label">{c.channels.whatsapp}</span>
+											<span class="channel-value">{whatsapp ? formatPhone(whatsapp) : '[Pendiente: contact.whatsapp]'}</span>
+										</span>
+									</a>
+								</li>
+							)}
+							{(email || isDev) && (
+								<li>
+									<a class="channel" href={email ? `mailto:${email}` : undefined}>
+										<span class="channel-icon">
+											<Icon name="mail" size={22} />
+										</span>
+										<span class="channel-text">
+											<span class="channel-label">{c.channels.email}</span>
+											<span class="channel-value">{email || '[Pendiente: contact.email]'}</span>
+										</span>
+									</a>
+								</li>
+							)}
+						</ul>
+					</aside>
+				)
+			}
+		</div>
+	</section>
+
+	<!-- Preguntas frecuentes -->
+	{
+		faqItems.length > 0 && (
+			<section class="section faq-section" aria-labelledby="faq-title">
+				<div class="container split">
+					<div class="faq-heading">
+						<SectionHeading id="faq-title" eyebrow={c.faq.eyebrow} title={c.faq.title} />
+						<a class="faq-link" href={`${localizePath('tours', lang)}#faq-title`}>
+							{c.faq.linkLabel} →
+						</a>
+					</div>
+					<FaqList items={faqItems} class="faq-list" />
+				</div>
+			</section>
+		)
+	}
+</BaseLayout>
+
+<style>
+	/* --- Encabezado --- */
+	.page-hero {
+		padding-block: var(--space-24) var(--space-16);
+	}
+
+	.page-hero-inner {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: var(--space-10);
+	}
+
+	.page-hero-heading {
+		flex: 999 1 35rem;
+		min-width: 0;
+	}
+
+	.page-hero-heading h1 {
+		margin-top: var(--space-5);
+		font-size: clamp(3.5rem, 2rem + 5.5vw, 7rem);
+	}
+
+	.accent {
+		color: var(--color-cta);
+	}
+
+	.page-hero-intro {
+		flex: 1 1 20rem;
+		max-width: 26rem;
+		font-size: var(--text-lg);
+		color: var(--color-text-muted);
+	}
+
+	/* --- Formulario + canales --- */
+	.contact-main {
+		padding-bottom: var(--section-space);
+	}
+
+	.contact-grid {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: stretch;
+		gap: var(--space-8);
+	}
+
+	.contact-grid > :global(.contact-form) {
+		flex: 999 1 35rem;
+		min-width: 0;
+	}
+
+	.channels {
+		flex: 1 1 21rem;
+		align-self: flex-start;
+		padding: var(--space-12) var(--space-10);
+		border-radius: var(--radius-lg);
+	}
+
+	.channels ul {
+		margin-top: var(--space-4);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.channel {
+		display: flex;
+		align-items: center;
+		gap: var(--space-4);
+		padding-block: var(--space-5);
+		border-bottom: 1px solid var(--color-border);
+		color: var(--color-inverse-text);
+		text-decoration: none;
+	}
+
+	.channel-icon {
+		display: grid;
+		place-items: center;
+		flex-shrink: 0;
+		width: 3rem;
+		height: 3rem;
+		border: 1px solid rgb(250 249 246 / 0.35);
+		border-radius: var(--radius-full);
+		color: var(--color-inverse-accent);
+	}
+
+	.channel-icon--cta {
+		border: 0;
+		background: var(--color-cta);
+		color: var(--color-on-cta);
+	}
+
+	.channel-text {
+		min-width: 0;
+	}
+
+	.channel-label {
+		display: block;
+		font-size: var(--text-sm);
+		color: var(--color-inverse-text-muted);
+	}
+
+	.channel-value {
+		font-family: var(--font-heading);
+		font-weight: var(--weight-bold);
+		font-size: var(--text-lg);
+		line-height: var(--leading-snug);
+		letter-spacing: 0.02em;
+		overflow-wrap: anywhere;
+	}
+
+	@media (hover: hover) and (pointer: fine) {
+		a.channel[href]:hover .channel-value {
+			text-decoration: underline;
+			text-underline-offset: 0.15em;
+		}
+	}
+
+	/* --- FAQ --- */
+	.faq-section {
+		background: var(--color-surface-muted);
+		--color-accent: var(--color-teal-800);
+	}
+
+	.split {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-16);
+	}
+
+	.faq-heading {
+		flex: 1 1 20rem;
+		max-width: 25rem;
+	}
+
+	.faq-link {
+		display: inline-block;
+		margin-top: var(--space-5);
+		font-weight: var(--weight-bold);
+		color: var(--color-teal-800);
+	}
+
+	.split > :global(.faq-list) {
+		flex: 999 1 35rem;
+		min-width: 0;
+	}
+</style>

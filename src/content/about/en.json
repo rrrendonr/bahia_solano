@@ -1,0 +1,58 @@
+{
+	"seo": {
+		"title": "About us",
+		"description": "Meet Bahía Solano Pesca, a sport fishing agency in Bahía Solano, Chocó, Colombia. Our story, our captains and guides, and the destination."
+	},
+	"hero": {
+		"eyebrow": "About us",
+		"title": "We’re from here.",
+		"titleAccent": "So is the sea.",
+		"intro": "[One or two sentences about who you are: a local Bahía Solano agency focused on sport fishing.]",
+		"imageLabel": "[Panoramic photo: the bay with the jungle and the boats]"
+	},
+	"story": {
+		"eyebrow": "Our story",
+		"title": "[Story headline]",
+		"paragraphs": [
+			"[How the agency started: year, who founded it and why.]",
+			"[What sets you apart today: the boats, the partnership with Darien Lodge, the local people you work with.]"
+		],
+		"milestones": [
+			{ "year": "[Year]", "label": "[Milestone: the agency is founded]" },
+			{ "year": "[Year]", "label": "[Milestone: first boat / lodge partnership]" },
+			{ "year": "[Year]", "label": "[Milestone: today, three boats]" }
+		]
+	},
+	"values": {
+		"eyebrow": "Why fish with us",
+		"title": "What every trip gets",
+		"items": [
+			{ "icon": "map-pin", "title": "Local knowledge", "text": "[Local captains and guides who know where and when the fish are.]" },
+			{ "icon": "shield", "title": "Safety", "text": "[Safety gear on board, permits and protocols.]" },
+			{ "icon": "fish", "title": "Responsible fishing", "text": "[Your catch-and-release or species care policy.]" },
+			{ "icon": "check", "title": "All included", "text": "Flights from Medellín, Darien Lodge, a boat with crew, guide and tackle in one package." }
+		]
+	},
+	"team": {
+		"eyebrow": "The team",
+		"title": "The people who take you out",
+		"intro": "[One sentence about the team: captains and guides from Bahía Solano.]"
+	},
+	"destination": {
+		"eyebrow": "The destination",
+		"title": "Bahía Solano, Chocó",
+		"text": "On the northern Colombian Pacific, where the jungle runs down to the sea. There’s no road in: you arrive by plane or by water. [Add what you want to highlight about the place.]",
+		"imageLabel": "[Aerial photo or map: Bahía Solano on the Chocó Pacific coast]",
+		"facts": [
+			{ "label": "Getting there", "value": "Flight from Medellín (included)" },
+			{ "label": "Best season", "value": "[Months]" },
+			{ "label": "Weather", "value": "[Temperature / rain]" },
+			{ "label": "Also", "value": "[Whales, Utría, beaches…]" }
+		]
+	},
+	"cta": {
+		"title": "Now you know us.",
+		"titleAccent": "Time to go fishing.",
+		"text": "Tell us your dates and group size. We’ll reply with boat availability and the package price."
+	}
+}

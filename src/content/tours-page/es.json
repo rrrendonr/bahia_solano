@@ -1,0 +1,111 @@
+{
+	"seo": {
+		"title": "Tours de pesca deportiva",
+		"description": "Tres botes para pescar en Bahía Solano. Todos los tours incluyen vuelo desde Medellín, hospedaje en el Darien Lodge, tripulación, guía y equipo."
+	},
+	"hero": {
+		"eyebrow": "Tours de pesca",
+		"title": "Un paquete.",
+		"titleAccent": "Tres botes.",
+		"intro": "Todos los tours incluyen vuelo desde Medellín, Darien Lodge, tripulación, guía y equipo. Lo que eliges es el bote."
+	},
+	"featuredLabel": "El más pedido",
+	"comparison": {
+		"eyebrow": "Compara",
+		"title": "¿Cuál bote es para ti?",
+		"caption": "Comparativa de los tres botes",
+		"rows": {
+			"length": "Eslora",
+			"anglers": "Pescadores máx.",
+			"engine": "Motor",
+			"fishingType": "Tipo de pesca",
+			"range": "Distancia de salida",
+			"idealFor": "Ideal para"
+		}
+	},
+	"includes": {
+		"eyebrow": "En todos los tours",
+		"title": "Qué incluye y qué no",
+		"includedTitle": "Incluye",
+		"included": [
+			"Vuelo Medellín – Bahía Solano, ida y regreso",
+			"Hospedaje en el Darien Lodge",
+			"Bote con capitán y tripulación",
+			"Guía de pesca",
+			"Equipo de pesca",
+			"[¿Alimentación? ¿Traslados aeropuerto–lodge?]"
+		],
+		"excludedTitle": "No incluye",
+		"excluded": [
+			"[Ej.: vuelos hasta Medellín]",
+			"[Ej.: bebidas alcohólicas]",
+			"[Ej.: propinas a la tripulación]",
+			"[Ej.: seguro de viaje]"
+		]
+	},
+	"faq": {
+		"eyebrow": "Preguntas frecuentes",
+		"title": "Antes de reservar",
+		"intro": "¿No está tu pregunta? Escríbenos por WhatsApp.",
+		"items": [
+			{
+				"question": "¿Necesito experiencia pescando?",
+				"answer": "[Respuesta: el guía acompaña a principiantes y a pescadores con experiencia.]"
+			},
+			{
+				"question": "¿Necesito licencia de pesca?",
+				"answer": "[Respuesta.]"
+			},
+			{
+				"question": "¿Qué debo llevar?",
+				"answer": "[Respuesta.]"
+			},
+			{
+				"question": "¿Qué pasa si el clima no deja salir?",
+				"answer": "[Respuesta.]"
+			},
+			{
+				"question": "¿Cuál es la política de cancelación?",
+				"answer": "[Respuesta.]"
+			}
+		]
+	},
+	"cta": {
+		"title": "¿Ya elegiste bote?",
+		"titleAccent": "Separa tus fechas.",
+		"text": "Cuéntanos fechas, cuántos viajan y qué bote te interesa. Te respondemos con disponibilidad y precio."
+	},
+	"detail": {
+		"summaryTitle": "Resumen",
+		"summary": {
+			"duration": "Duración",
+			"durationValue": "{days} días / {nights} noches",
+			"fishingDays": "Días de pesca",
+			"anglers": "Pescadores",
+			"anglersValue": "Hasta {n}",
+			"departure": "Sale desde",
+			"departureValue": "Medellín (vuelo incluido)",
+			"lodging": "Hospedaje"
+		},
+		"boatEyebrow": "El bote",
+		"specs": {
+			"length": "Eslora",
+			"engine": "Motor",
+			"capacity": "Capacidad",
+			"crew": "Tripulación",
+			"fishingType": "Tipo de pesca",
+			"onboard": "A bordo"
+		},
+		"itineraryEyebrow": "Itinerario",
+		"itineraryTitle": "Día a día",
+		"includedNote": "Vuelo, hospedaje, tripulación, guía y equipo incluidos.",
+		"includedLink": "Ver qué incluye y qué no",
+		"otherToursTitle": "Otros botes",
+		"galleryLabel": "Fotos del bote",
+		"cta": {
+			"title": "¿Este es tu bote?",
+			"titleAccent": "Separa tus fechas.",
+			"text": "Cuéntanos fechas y cuántos viajan. Te respondemos con disponibilidad y el precio del paquete."
+		}
+	}
+}

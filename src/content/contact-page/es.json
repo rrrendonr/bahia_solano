@@ -1,0 +1,46 @@
+{
+	"seo": {
+		"title": "Contacto",
+		"description": "Cotiza tu viaje de pesca deportiva a Bahía Solano. Escríbenos por WhatsApp o déjanos tus datos y te respondemos con disponibilidad y precio."
+	},
+	"hero": {
+		"eyebrow": "Contacto",
+		"title": "Hablemos de",
+		"titleAccent": "tu viaje.",
+		"intro": "Déjanos tus datos y el bote que te interesa. Te respondemos con disponibilidad y el precio del paquete. [Tiempo de respuesta habitual.]"
+	},
+	"form": {
+		"title": "Pide tu cotización",
+		"requiredNote": "Los campos con * son obligatorios.",
+		"name": "Nombre",
+		"email": "Correo",
+		"phone": "Teléfono / WhatsApp",
+		"phonePlaceholder": "+57 300 000 0000",
+		"tour": "Tour de interés",
+		"tourUndecided": "Aún no sé",
+		"tourHint": "Viene seleccionado si llegaste desde el botón “Cotizar” de un tour.",
+		"message": "Mensaje",
+		"optional": "(opcional)",
+		"messagePlaceholder": "Fechas tentativas, cuántos viajan, dudas…",
+		"submit": "Enviar solicitud",
+		"whatsapp": "Enviar por WhatsApp",
+		"note": "“Enviar solicitud” nos llega por correo. “Enviar por WhatsApp” abre WhatsApp con tus datos ya escritos. [Nota de privacidad.]",
+		"emailSubject": "Nueva solicitud de cotización — Bahía Solano Pesca",
+		"whatsappTemplate": "Hola, quiero cotizar un viaje de pesca.\nNombre: {name}\nCorreo: {email}\nTeléfono: {phone}\nTour: {tour}\nMensaje: {message}"
+	},
+	"channels": {
+		"title": "Escríbenos directo",
+		"whatsapp": "WhatsApp",
+		"email": "Correo"
+	},
+	"faq": {
+		"eyebrow": "Antes de escribirnos",
+		"title": "Preguntas frecuentes",
+		"linkLabel": "Ver todas en Tours",
+		"fromTours": [
+			0,
+			2,
+			4
+		]
+	}
+}

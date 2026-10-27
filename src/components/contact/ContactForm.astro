@@ -1,0 +1,264 @@
+---
+/**
+ * Formulario de cotización con dos salidas:
+ * - "Enviar solicitud": POST a Formspree (solo si hay formspreeId en src/config/site.ts).
+ * - "Enviar por WhatsApp": abre wa.me con los datos ya escritos (solo si hay número).
+ * El tour llega preseleccionado desde ?tour=<slug>.
+ */
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+import { site } from '../../config/site';
+import type { Locale } from '../../i18n/config';
+
+interface Labels {
+	title: string;
+	requiredNote: string;
+	name: string;
+	email: string;
+	phone: string;
+	phonePlaceholder: string;
+	tour: string;
+	tourUndecided: string;
+	tourHint: string;
+	message: string;
+	optional: string;
+	messagePlaceholder: string;
+	submit: string;
+	whatsapp: string;
+	note: string;
+	emailSubject: string;
+	whatsappTemplate: string;
+}
+
+interface Props {
+	lang: Locale;
+	labels: Labels;
+	tours: { id: string; name: string }[];
+}
+
+const { lang, labels: l, tours } = Astro.props;
+const { formspreeId } = site.forms;
+const { whatsapp } = site.contact;
+const isDev = import.meta.env.DEV;
+const hasActions = Boolean(formspreeId || whatsapp);
+---
+
+<form
+	class="contact-form"
+	action={formspreeId ? `https://formspree.io/f/${formspreeId}` : undefined}
+	method="POST"
+	data-contact-form
+	data-whatsapp={whatsapp || undefined}
+	data-template={l.whatsappTemplate}
+	data-undecided={l.tourUndecided}
+>
+	<h2>{l.title}</h2>
+	<p class="required-note">{l.requiredNote}</p>
+
+	<input type="hidden" name="_subject" value={l.emailSubject} />
+	<input type="hidden" name="idioma" value={lang} />
+	<!-- Trampa anti-spam de Formspree: los humanos no la ven -->
+	<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="honeypot" aria-hidden="true" />
+
+	<div class="fields">
+		<div class="field field--full">
+			<label for="c-name">{l.name} <span class="req" aria-hidden="true">*</span></label>
+			<input id="c-name" type="text" name="nombre" autocomplete="name" required />
+		</div>
+		<div class="field">
+			<label for="c-email">{l.email} <span class="req" aria-hidden="true">*</span></label>
+			<input id="c-email" type="email" name="correo" autocomplete="email" required />
+		</div>
+		<div class="field">
+			<label for="c-phone">{l.phone} <span class="req" aria-hidden="true">*</span></label>
+			<input id="c-phone" type="tel" name="telefono" autocomplete="tel" placeholder={l.phonePlaceholder} required />
+		</div>
+		<div class="field field--full">
+			<label for="c-tour">{l.tour}</label>
+			<select id="c-tour" name="tour" aria-describedby="c-tour-hint">
+				<option value="">{l.tourUndecided}</option>
+				{tours.map((tour) => <option value={tour.id}>{tour.name}</option>)}
+			</select>
+			<p id="c-tour-hint" class="hint">{l.tourHint}</p>
+		</div>
+		<div class="field field--full">
+			<label for="c-message">{l.message} <span class="optional">{l.optional}</span></label>
+			<textarea id="c-message" name="mensaje" rows="5" placeholder={l.messagePlaceholder}></textarea>
+		</div>
+	</div>
+
+	{
+		(hasActions || isDev) && (
+			<div class="actions">
+				{formspreeId && (
+					<Button type="submit">{l.submit}</Button>
+				)}
+				{whatsapp && (
+					<Button type="button" variant="outline" data-send-whatsapp>
+						<Icon name="message" size={22} strokeWidth={2} />
+						{l.whatsapp}
+					</Button>
+				)}
+				{isDev && !hasActions && (
+					<p class="dev-note">
+						[Solo en desarrollo] Configura <code>forms.formspreeId</code> y/o <code>contact.whatsapp</code> en
+						src/config/site.ts para mostrar los botones de envío.
+					</p>
+				)}
+			</div>
+		)
+	}
+	<p class="note">{l.note}</p>
+</form>
+
+<script>
+	function setupContactForm(form: HTMLFormElement) {
+		const select = form.querySelector<HTMLSelectElement>('select[name="tour"]');
+
+		// Preselecciona el tour que llega en la URL (?tour=bote-1)
+		const tourParam = new URLSearchParams(window.location.search).get('tour');
+		if (select && tourParam && Array.from(select.options).some((o) => o.value === tourParam)) {
+			select.value = tourParam;
+		}
+
+		const waButton = form.querySelector<HTMLButtonElement>('[data-send-whatsapp]');
+		const number = form.dataset.whatsapp;
+		if (!waButton || !number) return;
+
+		waButton.addEventListener('click', () => {
+			// Usa la validación nativa del navegador para los campos obligatorios
+			if (!form.reportValidity()) return;
+
+			const data = new FormData(form);
+			const tourName = select?.selectedOptions[0]?.value
+				? select.selectedOptions[0].text
+				: (form.dataset.undecided ?? '');
+			const values: Record<string, string> = {
+				name: String(data.get('nombre') ?? ''),
+				email: String(data.get('correo') ?? ''),
+				phone: String(data.get('telefono') ?? ''),
+				tour: tourName,
+				message: String(data.get('mensaje') ?? '') || '—',
+			};
+			const text = (form.dataset.template ?? '').replace(/\{(\w+)\}/g, (_, key: string) => values[key] ?? '');
+			window.open(`https://wa.me/${number}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+		});
+	}
+
+	document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach(setupContactForm);
+</script>
+
+<style>
+	.contact-form {
+		padding: clamp(var(--space-6), 4vw, var(--space-12));
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+	}
+
+	h2 {
+		font-size: var(--text-2xl);
+	}
+
+	.required-note {
+		margin-top: var(--space-3);
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+	}
+
+	.fields {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+		gap: var(--space-5);
+		margin-top: var(--space-8);
+	}
+
+	.field--full {
+		grid-column: 1 / -1;
+	}
+
+	label {
+		display: block;
+		margin-bottom: var(--space-2);
+		font-size: var(--text-sm);
+		font-weight: var(--weight-semibold);
+	}
+
+	.req {
+		color: var(--color-accent);
+		font-weight: var(--weight-regular);
+	}
+
+	.optional {
+		font-weight: var(--weight-regular);
+		color: var(--color-text-muted);
+	}
+
+	input,
+	select,
+	textarea {
+		width: 100%;
+		min-height: 3.25rem;
+		padding: var(--space-3) var(--space-4);
+		border: 1px solid var(--color-border-strong);
+		border-radius: var(--radius-md);
+		background: var(--color-bg);
+		color: var(--color-text);
+		font-size: var(--text-base);
+	}
+
+	textarea {
+		min-height: 8.75rem;
+		resize: vertical;
+		line-height: 1.5;
+	}
+
+	input:focus-visible,
+	select:focus-visible,
+	textarea:focus-visible {
+		outline: 3px solid var(--color-focus);
+		outline-offset: 1px;
+	}
+
+	input:user-invalid {
+		border-color: #b3261e;
+	}
+
+	.hint {
+		margin-top: var(--space-2);
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+	}
+
+	.honeypot {
+		position: absolute;
+		left: -9999px;
+		width: 1px;
+		height: 1px;
+		opacity: 0;
+	}
+
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-4);
+		margin-top: var(--space-8);
+		padding-top: var(--space-7);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.dev-note {
+		padding: var(--space-3) var(--space-4);
+		border: 1px dashed var(--color-border-strong);
+		border-radius: var(--radius-md);
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+	}
+
+	.note {
+		margin-top: var(--space-4);
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+	}
+</style>

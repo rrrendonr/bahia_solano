@@ -1,0 +1,7 @@
+{
+	"name": "[Nombre 2]",
+	"order": 2,
+	"role": { "es": "Guía de pesca", "en": "Fishing guide" },
+	"experience": { "es": "[N] años", "en": "[N] years" },
+	"bio": { "es": "[Una línea personal.]", "en": "[A personal line.]" }
+}

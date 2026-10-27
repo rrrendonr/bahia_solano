@@ -1,0 +1,89 @@
+{
+	"name": "[Bote 1]",
+	"order": 1,
+	"featured": false,
+	"category": {
+		"es": "[Categoría]",
+		"en": "[Category]"
+	},
+	"summary": {
+		"es": "[Para quién es este bote y qué tipo de pesca permite.]",
+		"en": "[Who this boat is for and what kind of fishing it does.]"
+	},
+	"headline": {
+		"es": "[Titular corto sobre el bote]",
+		"en": "[Short headline about the boat]"
+	},
+	"description": {
+		"es": "[Descripción: cómo es el bote, qué tipo de pesca hace mejor, hasta dónde sale y para quién es ideal.]",
+		"en": "[Description: what the boat is like, what fishing it does best, how far out it goes and who it suits.]"
+	},
+	"duration": {},
+	"specs": {
+		"engine": "[Motor]",
+		"crew": {
+			"es": "Capitán + [N]",
+			"en": "Captain + [N]"
+		},
+		"fishingType": {
+			"es": "[Altura / costera]",
+			"en": "[Offshore / inshore]"
+		},
+		"range": {
+			"es": "[Millas mar adentro]",
+			"en": "[Miles offshore]"
+		},
+		"idealFor": {
+			"es": "[Perfil de pescador]",
+			"en": "[Angler profile]"
+		},
+		"onboard": {
+			"es": "[Sombra, baño, nevera…]",
+			"en": "[Shade, head, cooler…]"
+		}
+	},
+	"itinerary": [
+		{
+			"day": {
+				"es": "Día 1",
+				"en": "Day 1"
+			},
+			"title": {
+				"es": "Llegada",
+				"en": "Arrival"
+			},
+			"text": {
+				"es": "Vuelo Medellín – Bahía Solano y llegada al Darien Lodge. [Charla con el guía, preparación del equipo…]",
+				"en": "Flight Medellín – Bahía Solano and check-in at Darien Lodge. [Briefing with the guide, gear prep…]"
+			}
+		},
+		{
+			"day": {
+				"es": "Días 2 – [N]",
+				"en": "Days 2 – [N]"
+			},
+			"title": {
+				"es": "Pesca",
+				"en": "Fishing"
+			},
+			"text": {
+				"es": "[Hora de salida, horas en el agua, zonas y regreso al lodge.]",
+				"en": "[Departure time, hours on the water, areas and return to the lodge.]"
+			}
+		},
+		{
+			"day": {
+				"es": "Día [N]",
+				"en": "Day [N]"
+			},
+			"title": {
+				"es": "Regreso",
+				"en": "Return"
+			},
+			"text": {
+				"es": "Vuelo Bahía Solano – Medellín. [Hora aproximada.]",
+				"en": "Flight Bahía Solano – Medellín. [Approximate time.]"
+			}
+		}
+	]
+}

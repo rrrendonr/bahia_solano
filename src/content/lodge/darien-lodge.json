@@ -1,0 +1,253 @@
+{
+	"name": "Darien Lodge",
+	"eyebrow": {
+		"es": "Dónde te quedas",
+		"en": "Where you stay"
+	},
+	"description": {
+		"es": "[Descripción del hotel: ubicación frente al mar, ambiente, a cuántos minutos del muelle, qué lo hace especial.]",
+		"en": "[About the hotel: seafront location, atmosphere, minutes to the dock, what makes it special.]"
+	},
+	"facts": [
+		{
+			"label": {
+				"es": "Habitaciones",
+				"en": "Rooms"
+			},
+			"value": {
+				"es": "[N]",
+				"en": "[N]"
+			}
+		},
+		{
+			"label": {
+				"es": "Al muelle",
+				"en": "To the dock"
+			},
+			"value": {
+				"es": "[N] min",
+				"en": "[N] min"
+			}
+		},
+		{
+			"label": {
+				"es": "Comidas",
+				"en": "Meals"
+			},
+			"value": {
+				"es": "[¿Incluidas?]",
+				"en": "[Included?]"
+			}
+		},
+		{
+			"label": {
+				"es": "Wifi",
+				"en": "Wi-Fi"
+			},
+			"value": {
+				"es": "[Sí / No]",
+				"en": "[Yes / No]"
+			}
+		}
+	],
+	"categories": [
+		{
+			"id": "spaces",
+			"label": {
+				"es": "Espacios",
+				"en": "Spaces"
+			}
+		},
+		{
+			"id": "rooms",
+			"label": {
+				"es": "Habitaciones",
+				"en": "Rooms"
+			}
+		},
+		{
+			"id": "food",
+			"label": {
+				"es": "Comidas",
+				"en": "Food"
+			}
+		},
+		{
+			"id": "amenities",
+			"label": {
+				"es": "Comodidades",
+				"en": "Amenities"
+			}
+		}
+	],
+	"photos": [
+		{
+			"category": "spaces",
+			"caption": {
+				"es": "[Vista del lodge desde el mar]",
+				"en": "[The lodge from the sea]"
+			}
+		},
+		{
+			"category": "spaces",
+			"caption": {
+				"es": "[Terraza]",
+				"en": "[Terrace]"
+			}
+		},
+		{
+			"category": "spaces",
+			"caption": {
+				"es": "[Zona social]",
+				"en": "[Lounge area]"
+			}
+		},
+		{
+			"category": "spaces",
+			"caption": {
+				"es": "[Jardín y selva]",
+				"en": "[Garden and jungle]"
+			}
+		},
+		{
+			"category": "spaces",
+			"caption": {
+				"es": "[Muelle]",
+				"en": "[Dock]"
+			}
+		},
+		{
+			"category": "spaces",
+			"caption": {
+				"es": "[Atardecer]",
+				"en": "[Sunset]"
+			}
+		},
+		{
+			"category": "rooms",
+			"caption": {
+				"es": "[Habitación doble]",
+				"en": "[Double room]"
+			}
+		},
+		{
+			"category": "rooms",
+			"caption": {
+				"es": "[Habitación sencilla]",
+				"en": "[Single room]"
+			}
+		},
+		{
+			"category": "rooms",
+			"caption": {
+				"es": "[Baño]",
+				"en": "[Bathroom]"
+			}
+		},
+		{
+			"category": "rooms",
+			"caption": {
+				"es": "[Vista desde la habitación]",
+				"en": "[View from the room]"
+			}
+		},
+		{
+			"category": "rooms",
+			"caption": {
+				"es": "[Balcón]",
+				"en": "[Balcony]"
+			}
+		},
+		{
+			"category": "rooms",
+			"caption": {
+				"es": "[Detalle]",
+				"en": "[Detail]"
+			}
+		},
+		{
+			"category": "food",
+			"caption": {
+				"es": "[Pescado del día]",
+				"en": "[Catch of the day]"
+			}
+		},
+		{
+			"category": "food",
+			"caption": {
+				"es": "[Desayuno]",
+				"en": "[Breakfast]"
+			}
+		},
+		{
+			"category": "food",
+			"caption": {
+				"es": "[Comedor]",
+				"en": "[Dining room]"
+			}
+		},
+		{
+			"category": "food",
+			"caption": {
+				"es": "[Bar]",
+				"en": "[Bar]"
+			}
+		},
+		{
+			"category": "food",
+			"caption": {
+				"es": "[Frutas locales]",
+				"en": "[Local fruit]"
+			}
+		},
+		{
+			"category": "food",
+			"caption": {
+				"es": "[Cena]",
+				"en": "[Dinner]"
+			}
+		},
+		{
+			"category": "amenities",
+			"caption": {
+				"es": "[Comodidad principal]",
+				"en": "[Main amenity]"
+			}
+		},
+		{
+			"category": "amenities",
+			"caption": {
+				"es": "[Hamacas]",
+				"en": "[Hammocks]"
+			}
+		},
+		{
+			"category": "amenities",
+			"caption": {
+				"es": "[Zona de equipo de pesca]",
+				"en": "[Fishing gear area]"
+			}
+		},
+		{
+			"category": "amenities",
+			"caption": {
+				"es": "[Wifi / zona de trabajo]",
+				"en": "[Wi-Fi / work area]"
+			}
+		},
+		{
+			"category": "amenities",
+			"caption": {
+				"es": "[Lavandería]",
+				"en": "[Laundry]"
+			}
+		},
+		{
+			"category": "amenities",
+			"caption": {
+				"es": "[Otra comodidad]",
+				"en": "[Other amenity]"
+			}
+		}
+	]
+}
