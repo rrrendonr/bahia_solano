@@ -1,20 +1,20 @@
 ---
 /**
  * Ruta dinámica que genera las páginas internas en ambos idiomas con su slug traducido
- * (p. ej. /es/sobre-nosotros/ y /en/about-us/) y el detalle de cada tour
- * (/es/tours/bote-1/). Los slugs vienen de src/i18n/routes.ts y de la colección de tours.
+ * (p. ej. /es/sobre-nosotros/ y /en/about-us/) y la página de cada destino
+ * (/es/tours/chile/). Los slugs vienen de src/i18n/routes.ts y de la colección de destinos.
  */
 import type { GetStaticPaths } from 'astro';
 import AboutPage from '../../views/AboutPage.astro';
 import ToursPage from '../../views/ToursPage.astro';
-import TourDetailPage from '../../views/TourDetailPage.astro';
+import DestinationPage from '../../views/DestinationPage.astro';
 import ContactPage from '../../views/ContactPage.astro';
 import { isLocale, locales } from '../../i18n/config';
 import { dynamicPages, routes, type DynamicPageKey } from '../../i18n/routes';
-import { getTours, type Tour } from '../../lib/tours';
+import { getDestinations, type Destination } from '../../lib/destinations';
 
 export const getStaticPaths = (async () => {
-	const tours = await getTours();
+	const destinations = await getDestinations();
 
 	return locales.flatMap((lang) => [
 		// Páginas fijas
@@ -22,15 +22,15 @@ export const getStaticPaths = (async () => {
 			params: { lang, slug: routes[page][lang] },
 			props: { page } as const,
 		})),
-		// Detalle de cada tour
-		...tours.map((tour) => ({
-			params: { lang, slug: `${routes.tours[lang]}/${tour.id}` },
-			props: { page: 'tourDetail', tour } as const,
+		// Página de cada destino
+		...destinations.map((destination) => ({
+			params: { lang, slug: `${routes.tours[lang]}/${destination.id}` },
+			props: { page: 'destination', destination } as const,
 		})),
 	]);
 }) satisfies GetStaticPaths;
 
-type PageProps = { page: DynamicPageKey } | { page: 'tourDetail'; tour: Tour };
+type PageProps = { page: DynamicPageKey } | { page: 'destination'; destination: Destination };
 
 const views = {
 	about: AboutPage,
@@ -43,7 +43,13 @@ const props = Astro.props as PageProps;
 
 if (!isLocale(lang)) throw new Error(`Idioma no soportado: ${lang}`);
 
-const View = props.page === 'tourDetail' ? null : views[props.page];
+const View = props.page === 'destination' ? null : views[props.page];
 ---
 
-{props.page === 'tourDetail' ? <TourDetailPage lang={lang} tour={props.tour} /> : View && <View lang={lang} />}
+{
+	props.page === 'destination' ? (
+		<DestinationPage lang={lang} destination={props.destination} />
+	) : (
+		View && <View lang={lang} />
+	)
+}

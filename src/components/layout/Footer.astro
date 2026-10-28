@@ -21,8 +21,9 @@ const navItems: { key: RouteKey; label: string }[] = [
 ];
 
 const socialLabels: Record<SocialNetwork, string> = {
-	instagram: 'Instagram',
 	facebook: 'Facebook',
+	instagram: 'Instagram',
+	tiktok: 'TikTok',
 	youtube: 'YouTube',
 };
 
@@ -84,7 +85,8 @@ const { whatsapp, email } = site.contact;
 
 			{
 				socials.length > 0 && (
-					<nav aria-label={t('footer.social')}>
+					<nav class="footer-social" aria-labelledby="footer-social-title">
+						<p id="footer-social-title" class="footer-heading">{t('footer.social')}</p>
 						<ul role="list" class="social-list">
 							{socials.map(([network, url]) => (
 								<li>
@@ -93,7 +95,7 @@ const { whatsapp, email } = site.contact;
 										href={url}
 										rel="noopener"
 										target="_blank"
-										aria-label={socialLabels[network]}
+										aria-label={`${socialLabels[network]} (${t('footer.newTab')})`}
 									>
 										<Icon name={network} size={20} strokeWidth={2} />
 									</a>

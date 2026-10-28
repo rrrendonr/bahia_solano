@@ -1,0 +1,121 @@
+{
+	"name": "Orinoco",
+	"order": 3,
+	"featured": false,
+	"country": {
+		"es": "Colombia",
+		"en": "Colombia"
+	},
+	"summary": {
+		"es": "[Una o dos frases sobre el destino y el tipo de pesca.]",
+		"en": "[One or two sentences about the destination and the fishing.]"
+	},
+	"headline": {
+		"es": "[Titular corto sobre el destino]",
+		"en": "[Short headline about the destination]"
+	},
+	"paragraphs": [
+		{
+			"es": "[Descripción: dónde queda, cómo es el paisaje, qué tipo de pesca se hace y para quién es ideal.]",
+			"en": "[Description: where it is, the landscape, the type of fishing and who it suits.]"
+		},
+		{
+			"es": "[Cómo es el hospedaje y qué hace especial este viaje.]",
+			"en": "[What the lodging is like and what makes this trip special.]"
+		}
+	],
+	"duration": {},
+	"mainSpecies": {
+		"es": "[Especie principal]",
+		"en": "[Main species]"
+	},
+	"species": {
+		"es": "[Especies]",
+		"en": "[Species]"
+	},
+	"fishingType": {
+		"es": "[Tipo de pesca]",
+		"en": "[Fishing type]"
+	},
+	"season": {
+		"es": "[Meses]",
+		"en": "[Months]"
+	},
+	"departure": {
+		"es": "[Ciudad]",
+		"en": "[City]"
+	},
+	"lodging": "[Lodge / hotel]",
+	"itinerary": [
+		{
+			"day": {
+				"es": "Día 1",
+				"en": "Day 1"
+			},
+			"title": {
+				"es": "Llegada",
+				"en": "Arrival"
+			},
+			"text": {
+				"es": "[Vuelo / traslado y llegada al hospedaje.]",
+				"en": "[Flight / transfer and check-in.]"
+			}
+		},
+		{
+			"day": {
+				"es": "Días 2 – [N]",
+				"en": "Days 2 – [N]"
+			},
+			"title": {
+				"es": "Pesca",
+				"en": "Fishing"
+			},
+			"text": {
+				"es": "[Cómo es un día de pesca.]",
+				"en": "[What a fishing day looks like.]"
+			}
+		},
+		{
+			"day": {
+				"es": "Día [N]",
+				"en": "Day [N]"
+			},
+			"title": {
+				"es": "Regreso",
+				"en": "Return"
+			},
+			"text": {
+				"es": "[Traslado y vuelo de regreso.]",
+				"en": "[Transfer and flight home.]"
+			}
+		}
+	],
+	"included": [
+		{
+			"es": "[Incluido 1]",
+			"en": "[Included 1]"
+		},
+		{
+			"es": "[Incluido 2]",
+			"en": "[Included 2]"
+		},
+		{
+			"es": "[Incluido 3]",
+			"en": "[Included 3]"
+		}
+	],
+	"excluded": [
+		{
+			"es": "[No incluido 1]",
+			"en": "[Not included 1]"
+		},
+		{
+			"es": "[No incluido 2]",
+			"en": "[Not included 2]"
+		}
+	],
+	"region": {
+		"es": "Orinoquía",
+		"en": "Orinoquía region"
+	}
+}

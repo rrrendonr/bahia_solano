@@ -1,0 +1,151 @@
+{
+	"name": "Bahía Solano",
+	"order": 1,
+	"featured": true,
+	"country": {
+		"es": "Colombia",
+		"en": "Colombia"
+	},
+	"summary": {
+		"es": "Pesca en el Pacífico chocoano, donde la selva baja hasta el mar. [Una frase más sobre el viaje.]",
+		"en": "Fishing on Colombia’s Chocó Pacific coast, where the jungle runs down to the sea. [One more sentence about the trip.]"
+	},
+	"headline": {
+		"es": "[Titular corto sobre el destino]",
+		"en": "[Short headline about the destination]"
+	},
+	"paragraphs": [
+		{
+			"es": "[Descripción: dónde queda, cómo es el paisaje, qué tipo de pesca se hace y para quién es ideal.]",
+			"en": "[Description: where it is, the landscape, the type of fishing and who it suits.]"
+		},
+		{
+			"es": "[Cómo es el hospedaje y qué hace especial este viaje.]",
+			"en": "[What the lodging is like and what makes this trip special.]"
+		}
+	],
+	"duration": {},
+	"mainSpecies": {
+		"es": "[Especie principal]",
+		"en": "[Main species]"
+	},
+	"species": {
+		"es": "[Especies]",
+		"en": "[Species]"
+	},
+	"fishingType": {
+		"es": "[Mar abierto / costera]",
+		"en": "[Offshore / inshore]"
+	},
+	"season": {
+		"es": "[Meses]",
+		"en": "[Months]"
+	},
+	"departure": {
+		"es": "Medellín (vuelo incluido)",
+		"en": "Medellín (flight included)"
+	},
+	"lodging": "Darien Lodge",
+	"itinerary": [
+		{
+			"day": {
+				"es": "Día 1",
+				"en": "Day 1"
+			},
+			"title": {
+				"es": "Llegada",
+				"en": "Arrival"
+			},
+			"text": {
+				"es": "Vuelo Medellín – Bahía Solano y llegada al Darien Lodge. [Charla con el guía, preparación del equipo…]",
+				"en": "Flight Medellín – Bahía Solano and check-in at Darien Lodge. [Briefing with the guide, gear prep…]"
+			}
+		},
+		{
+			"day": {
+				"es": "Días 2 – [N]",
+				"en": "Days 2 – [N]"
+			},
+			"title": {
+				"es": "Pesca",
+				"en": "Fishing"
+			},
+			"text": {
+				"es": "[Hora de salida, horas en el agua, zonas y regreso al lodge.]",
+				"en": "[Departure time, hours on the water, areas and return to the lodge.]"
+			}
+		},
+		{
+			"day": {
+				"es": "Día [N]",
+				"en": "Day [N]"
+			},
+			"title": {
+				"es": "Regreso",
+				"en": "Return"
+			},
+			"text": {
+				"es": "Vuelo Bahía Solano – Medellín. [Hora aproximada.]",
+				"en": "Flight Bahía Solano – Medellín. [Approximate time.]"
+			}
+		}
+	],
+	"included": [
+		{
+			"es": "Vuelo Medellín – Bahía Solano, ida y regreso",
+			"en": "Round-trip flight Medellín – Bahía Solano"
+		},
+		{
+			"es": "Hospedaje en el Darien Lodge",
+			"en": "Lodging at Darien Lodge"
+		},
+		{
+			"es": "Bote con capitán y tripulación",
+			"en": "Boat with captain and crew"
+		},
+		{
+			"es": "Guía de pesca",
+			"en": "Fishing guide"
+		},
+		{
+			"es": "Equipo de pesca",
+			"en": "Fishing tackle"
+		},
+		{
+			"es": "[¿Alimentación? ¿Traslados aeropuerto–lodge?]",
+			"en": "[Meals? Airport–lodge transfers?]"
+		}
+	],
+	"excluded": [
+		{
+			"es": "[Ej.: vuelos hasta Medellín]",
+			"en": "[E.g. flights to Medellín]"
+		},
+		{
+			"es": "[Ej.: bebidas alcohólicas]",
+			"en": "[E.g. alcoholic drinks]"
+		},
+		{
+			"es": "[Ej.: propinas a la tripulación]",
+			"en": "[E.g. crew tips]"
+		},
+		{
+			"es": "[Ej.: seguro de viaje]",
+			"en": "[E.g. travel insurance]"
+		}
+	],
+	"region": {
+		"es": "Pacífico chocoano",
+		"en": "Chocó Pacific coast"
+	},
+	"highlights": [
+		{
+			"es": "vuelo desde Medellín",
+			"en": "flight from Medellín"
+		},
+		{
+			"es": "Darien Lodge",
+			"en": "Darien Lodge"
+		}
+	]
+}

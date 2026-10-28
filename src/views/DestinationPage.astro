@@ -1,74 +1,75 @@
 ---
+/**
+ * Plantilla única para todos los destinos (Bahía Solano, Chile, Orinoco, Costa Rica).
+ * Contenido: src/content/destinations/<slug>.json + textos en src/content/tours-page/{es,en}.json
+ */
 import { getEntry } from 'astro:content';
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import Button from '../components/ui/Button.astro';
 import Icon from '../components/ui/Icon.astro';
-import SectionHeading from '../components/ui/SectionHeading.astro';
 import TourGallery from '../components/tours/TourGallery.astro';
 import CtaBand from '../components/sections/CtaBand.astro';
 import { localeMeta, locales, type Locale } from '../i18n/config';
 import { getAlternates, localizePath } from '../i18n/routes';
 import { useTranslations } from '../i18n/ui';
-import { fill, getTours, pending, tourPath, tourQuotePath, type Tour } from '../lib/tours';
+import {
+	destinationEyebrow,
+	destinationPath,
+	destinationQuotePath,
+	fill,
+	getDestinations,
+	pending,
+	type Destination,
+} from '../lib/destinations';
 import { site } from '../config/site';
 
 interface Props {
 	lang: Locale;
-	tour: Tour;
+	destination: Destination;
 }
 
-const { lang, tour } = Astro.props;
+const { lang, destination } = Astro.props;
 const t = useTranslations(lang);
-const d = tour.data;
+const d = destination.data;
 
 const entry = await getEntry('toursPage', lang);
 if (!entry) throw new Error(`Falta src/content/tours-page/${lang}.json`);
-const c = entry.data;
-const dc = c.detail;
+const dc = entry.data.detail;
 
-const otherTours = (await getTours()).filter((other) => other.id !== tour.id);
+const others = (await getDestinations()).filter((o) => o.id !== destination.id);
 
-// El slug del tour es igual en ambos idiomas
-const alternates = getAlternates('tours', Object.fromEntries(locales.map((l) => [l, tour.id])));
+// El slug es igual en ambos idiomas
+const alternates = getAlternates('tours', Object.fromEntries(locales.map((l) => [l, destination.id])));
 const siteUrl = Astro.site ?? Astro.url;
-const quoteHref = tourQuotePath(lang, tour.id);
+const quoteHref = destinationQuotePath(lang, destination.id);
 const { whatsapp } = site.contact;
+const eyebrow = destinationEyebrow(d, lang);
 
-// Galería: portada + fotos adicionales
 const photos = [
 	...(d.cover ? [{ src: d.cover, alt: d.coverAlt?.[lang] ?? d.name }] : []),
 	...d.gallery.map((p) => ({ src: p.src, alt: p.alt[lang] })),
 ];
 
-const specs = [
-	`${pending(d.lengthFt)} ${t('tour.feet')}`,
-	t('tour.anglers', { n: pending(d.maxAnglers) }),
-	t('tour.crew'),
-].join(' · ');
+const headlineFacts = [
+	fill(dc.days, { n: pending(d.duration.days) }),
+	d.mainSpecies?.[lang],
+	d.fishingType?.[lang],
+]
+	.filter(Boolean)
+	.join(' · ');
 
 const summary = [
 	{
 		label: dc.summary.duration,
-		value: fill(dc.summary.durationValue, {
-			days: pending(d.duration.days),
-			nights: pending(d.duration.nights),
-		}),
+		value: fill(dc.summary.durationValue, { days: pending(d.duration.days), nights: pending(d.duration.nights) }),
 	},
 	{ label: dc.summary.fishingDays, value: pending(d.duration.fishingDays) },
-	{ label: dc.summary.anglers, value: fill(dc.summary.anglersValue, { n: pending(d.maxAnglers) }) },
-	{ label: dc.summary.departure, value: dc.summary.departureValue },
-	{ label: dc.summary.lodging, value: 'Darien Lodge' },
-];
-
-const techSpecs = [
-	{ label: dc.specs.length, value: `${pending(d.lengthFt)} ${t('tour.feet')}` },
-	{ label: dc.specs.engine, value: pending(d.specs.engine, '[Motor]') },
-	{ label: dc.specs.capacity, value: fill(dc.summary.anglersValue, { n: pending(d.maxAnglers) }) },
-	{ label: dc.specs.crew, value: pending(d.specs.crew?.[lang], '—') },
-	{ label: dc.specs.fishingType, value: pending(d.specs.fishingType?.[lang], '—') },
-	{ label: dc.specs.onboard, value: pending(d.specs.onboard?.[lang], '—') },
+	{ label: dc.summary.species, value: pending(d.species?.[lang], '—') },
+	{ label: dc.summary.season, value: pending(d.season?.[lang], '—') },
+	{ label: dc.summary.departure, value: pending(d.departure?.[lang], '—') },
+	{ label: dc.summary.lodging, value: pending(d.lodging, '—') },
 ];
 
 const pageUrl = new URL(alternates[lang], siteUrl).href;
@@ -89,11 +90,7 @@ const schema = {
 			description: step.text[lang],
 		})),
 	},
-	provider: {
-		'@type': 'TravelAgency',
-		name: site.name,
-		url: new URL(`/${lang}/`, siteUrl).href,
-	},
+	provider: { '@type': 'TravelAgency', name: site.name, url: new URL(`/${lang}/`, siteUrl).href },
 	...(d.cover ? { image: new URL(d.cover.src, siteUrl).href } : {}),
 };
 ---
@@ -120,10 +117,9 @@ const schema = {
 				]}
 			/>
 			<div class="detail-title">
-				{d.featured && <span class="badge">{c.featuredLabel}</span>}
-				{!d.featured && d.category && <span class="badge badge--muted">{d.category[lang]}</span>}
+				<p class="eyebrow">{eyebrow}</p>
 				<h1>{d.name}</h1>
-				<p class="detail-specs">{specs}</p>
+				<p class="detail-facts">{headlineFacts}</p>
 			</div>
 		</div>
 	</section>
@@ -146,7 +142,7 @@ const schema = {
 					}
 				</dl>
 				<div class="summary-actions">
-					<Button href={quoteHref}>{t('cta.quoteTour')}</Button>
+					<Button href={quoteHref}>{dc.quote}</Button>
 					{
 						whatsapp && (
 							<Button href={`https://wa.me/${whatsapp}`} variant="ghost" target="_blank" rel="noopener">
@@ -160,20 +156,16 @@ const schema = {
 		</div>
 	</section>
 
-	<!-- El bote + ficha técnica -->
-	<section class="section" aria-labelledby="boat-title">
+	<!-- El destino -->
+	<section class="section" aria-labelledby="about-title">
 		<div class="container split">
-			<SectionHeading id="boat-title" eyebrow={dc.boatEyebrow} title={d.headline[lang]} intro={d.description[lang]} />
-			<dl class="tech-specs">
-				{
-					techSpecs.map((spec) => (
-						<div>
-							<dt>{spec.label}</dt>
-							<dd>{spec.value}</dd>
-						</div>
-					))
-				}
-			</dl>
+			<div class="split-heading">
+				<p class="eyebrow">{dc.aboutEyebrow}</p>
+				<h2 id="about-title">{d.headline[lang]}</h2>
+			</div>
+			<div class="about-text">
+				{d.paragraphs.map((p) => <p>{p[lang]}</p>)}
+			</div>
 		</div>
 	</section>
 
@@ -182,7 +174,8 @@ const schema = {
 		d.itinerary.length > 0 && (
 			<section class="section itinerary" aria-labelledby="itin-title">
 				<div class="container">
-					<SectionHeading id="itin-title" eyebrow={dc.itineraryEyebrow} title={dc.itineraryTitle} />
+					<p class="eyebrow">{dc.itineraryEyebrow}</p>
+					<h2 id="itin-title" class="itinerary-title">{dc.itineraryTitle}</h2>
 					<ol role="list" class="itinerary-list">
 						{d.itinerary.map((step) => (
 							<li>
@@ -192,36 +185,71 @@ const schema = {
 							</li>
 						))}
 					</ol>
-					<p class="included-note">
-						{dc.includedNote}{' '}
-						<a href={`${localizePath('tours', lang)}#inc-title`}>{dc.includedLink} →</a>
-					</p>
 				</div>
 			</section>
 		)
 	}
 
-	<!-- Otros tours -->
+	<!-- Incluye / no incluye -->
 	{
-		otherTours.length > 0 && (
-			<section class="section" aria-labelledby="other-title">
+		(d.included.length > 0 || d.excluded.length > 0) && (
+			<section class="section" aria-labelledby="inc-title">
 				<div class="container">
-					<h2 id="other-title" class="other-title">{dc.otherToursTitle}</h2>
+					<h2 id="inc-title">{dc.includesTitle}</h2>
+					<div class="includes-grid">
+						{d.included.length > 0 && (
+							<div class="includes-box surface-inverse">
+								<h3>{dc.includedTitle}</h3>
+								<ul role="list">
+									{d.included.map((item) => (
+										<li>
+											<Icon name="check" size={22} strokeWidth={2.25} class="inc-icon" />
+											{item[lang]}
+										</li>
+									))}
+								</ul>
+							</div>
+						)}
+						{d.excluded.length > 0 && (
+							<div class="includes-box includes-box--outline">
+								<h3>{dc.excludedTitle}</h3>
+								<ul role="list">
+									{d.excluded.map((item) => (
+										<li>
+											<svg class="inc-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14" /></svg>
+											{item[lang]}
+										</li>
+									))}
+								</ul>
+							</div>
+						)}
+					</div>
+				</div>
+			</section>
+		)
+	}
+
+	<!-- Otros destinos -->
+	{
+		others.length > 0 && (
+			<section class="section section--flush-top" aria-labelledby="other-title">
+				<div class="container">
+					<h2 id="other-title" class="other-title">{dc.otherTitle}</h2>
 					<ul role="list" class="other-grid">
-						{otherTours.map((other) => (
+						{others.map((o) => (
 							<li>
-								<a class="other-card" href={tourPath(lang, other.id)}>
+								<a class="other-card" href={destinationPath(lang, o.id)}>
 									<div class="other-media">
-										{other.data.cover ? (
-											<Image src={other.data.cover} alt="" widths={[240, 360]} sizes="180px" />
+										{o.data.cover ? (
+											<Image src={o.data.cover} alt="" widths={[240, 360]} sizes="140px" />
 										) : (
 											<div class="media-placeholder" aria-hidden="true">[Foto]</div>
 										)}
 									</div>
 									<div>
-										<h3>{other.data.name}</h3>
+										<h3>{o.data.name}</h3>
 										<p>
-											{pending(other.data.lengthFt)} {t('tour.feet')} · {t('tour.anglers', { n: pending(other.data.maxAnglers) })}
+											{o.data.country[lang]} · {fill(dc.days, { n: pending(o.data.duration.days) })}
 										</p>
 									</div>
 								</a>
@@ -235,10 +263,10 @@ const schema = {
 
 	<CtaBand
 		lang={lang}
-		title={dc.cta.title}
-		titleAccent={dc.cta.titleAccent}
-		text={dc.cta.text}
-		ctaLabel={t('cta.quoteTour')}
+		title={fill(dc.ctaTitle, { name: d.name })}
+		titleAccent={dc.ctaTitleAccent}
+		text={dc.ctaText}
+		ctaLabel={dc.quote}
 		ctaHref={quoteHref}
 	/>
 </BaseLayout>
@@ -250,34 +278,16 @@ const schema = {
 	}
 
 	.detail-title {
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		gap: var(--space-4);
 		margin-top: var(--space-12);
 	}
 
 	.detail-title h1 {
+		margin-top: var(--space-4);
 		font-size: clamp(3.5rem, 2rem + 5vw, 6.5rem);
 	}
 
-	.badge {
-		padding: var(--space-1) var(--space-3);
-		border-radius: var(--radius-sm);
-		background: var(--color-cta);
-		color: var(--color-on-cta);
-		font-size: var(--text-xs);
-		font-weight: var(--weight-bold);
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-	}
-
-	.badge--muted {
-		background: var(--color-teal-50);
-		color: var(--color-teal-800);
-	}
-
-	.detail-specs {
+	.detail-facts {
+		margin-top: var(--space-4);
 		font-size: var(--text-lg);
 		font-weight: var(--weight-semibold);
 		color: var(--color-accent);
@@ -331,52 +341,40 @@ const schema = {
 		margin-top: var(--space-7);
 	}
 
-	/* --- Ficha técnica --- */
+	/* --- El destino --- */
 	.split {
 		display: flex;
 		flex-wrap: wrap;
 		gap: var(--space-16);
 	}
 
-	.split > :global(.section-heading) {
+	.split-heading {
 		flex: 1 1 22rem;
 		max-width: 30rem;
 	}
 
-	.tech-specs {
+	.split-heading h2 {
+		margin-top: var(--space-4);
+	}
+
+	.about-text {
 		flex: 999 1 35rem;
 		min-width: 0;
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.5rem), 1fr));
-		border-top: 3px solid var(--color-navy-900);
-	}
-
-	.tech-specs div {
-		padding: var(--space-6) var(--space-6) var(--space-6) 0;
-		border-bottom: 1px solid var(--color-border);
-	}
-
-	.tech-specs dt {
-		font-size: var(--text-sm);
-		font-weight: var(--weight-bold);
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		color: var(--color-accent);
-	}
-
-	.tech-specs dd {
-		margin: var(--space-2) 0 0;
-		font-family: var(--font-heading);
-		font-weight: var(--weight-bold);
-		font-size: var(--text-xl);
-		line-height: var(--leading-snug);
-		text-transform: uppercase;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-5);
+		font-size: var(--text-lg);
+		color: var(--color-text-muted);
 	}
 
 	/* --- Itinerario --- */
 	.itinerary {
 		background: var(--color-surface-muted);
 		--color-accent: var(--color-teal-800);
+	}
+
+	.itinerary-title {
+		margin-top: var(--space-4);
 	}
 
 	.itinerary-list {
@@ -409,24 +407,62 @@ const schema = {
 		color: var(--color-text-muted);
 	}
 
-	.included-note {
-		margin-top: var(--space-8);
-		font-size: var(--text-sm);
+	/* --- Incluye --- */
+	.includes-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+		gap: var(--space-7);
+		margin-top: var(--space-12);
+	}
+
+	.includes-box {
+		padding: var(--space-10);
+		border-radius: var(--radius-lg);
+	}
+
+	.includes-box--outline {
+		border: 1px solid var(--color-border-strong);
 		color: var(--color-text-muted);
 	}
 
-	.included-note a {
-		font-weight: var(--weight-bold);
+	.includes-box h3 {
+		font-size: var(--text-2xl);
+		color: var(--color-heading);
 	}
 
-	/* --- Otros tours --- */
+	.includes-box ul {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
+		margin-top: var(--space-6);
+	}
+
+	.includes-box li {
+		display: flex;
+		gap: var(--space-3);
+	}
+
+	.includes-box :global(.inc-icon) {
+		flex-shrink: 0;
+		margin-top: 3px;
+	}
+
+	.surface-inverse :global(.inc-icon) {
+		color: var(--color-inverse-accent);
+	}
+
+	/* --- Otros destinos --- */
+	.section--flush-top {
+		padding-top: 0;
+	}
+
 	.other-title {
 		font-size: var(--text-2xl);
 	}
 
 	.other-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 17.5rem), 1fr));
 		gap: var(--space-7);
 		margin-top: var(--space-10);
 	}
@@ -435,6 +471,7 @@ const schema = {
 		display: flex;
 		align-items: center;
 		gap: var(--space-5);
+		height: 100%;
 		padding-right: var(--space-6);
 		overflow: hidden;
 		background: var(--color-surface);
@@ -447,8 +484,8 @@ const schema = {
 	.other-media {
 		flex-shrink: 0;
 		align-self: stretch;
-		width: 11.25rem;
-		min-height: 8.75rem;
+		width: 8.75rem;
+		min-height: 7.5rem;
 	}
 
 	.other-media :global(img),

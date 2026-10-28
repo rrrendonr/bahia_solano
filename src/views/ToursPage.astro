@@ -1,16 +1,26 @@
 ---
+/**
+ * Listado de Tours: destinos, comparativa, preguntas frecuentes generales y cierre.
+ * Contenido: src/content/tours-page/{es,en}.json y src/content/destinations/*.json
+ */
 import { getEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/ui/SectionHeading.astro';
-import Icon from '../components/ui/Icon.astro';
-import TourCard from '../components/cards/TourCard.astro';
+import DestinationCard from '../components/cards/DestinationCard.astro';
 import FaqList from '../components/sections/FaqList.astro';
 import CtaBand from '../components/sections/CtaBand.astro';
-import LodgeSection from '../components/lodge/LodgeSection.astro';
 import { localeMeta, type Locale } from '../i18n/config';
 import { getAlternates } from '../i18n/routes';
-import { useTranslations } from '../i18n/ui';
-import { getTours, pending, tourPath, tourQuotePath } from '../lib/tours';
+import {
+	destinationEyebrow,
+	destinationFacts,
+	destinationPath,
+	destinationQuotePath,
+	fill,
+	getDestinations,
+	pending,
+	type Destination,
+} from '../lib/destinations';
 import { site } from '../config/site';
 
 interface Props {
@@ -18,23 +28,27 @@ interface Props {
 }
 
 const { lang } = Astro.props;
-const t = useTranslations(lang);
 
 const entry = await getEntry('toursPage', lang);
 if (!entry) throw new Error(`Falta src/content/tours-page/${lang}.json`);
 const c = entry.data;
 
-const tours = await getTours();
+const destinations = await getDestinations();
 const alternates = getAlternates('tours');
 const siteUrl = Astro.site ?? Astro.url;
 
-const rows = [
-	{ label: c.comparison.rows.length, value: (d: (typeof tours)[number]['data']) => `${pending(d.lengthFt)} ${t('tour.feet')}` },
-	{ label: c.comparison.rows.anglers, value: (d: (typeof tours)[number]['data']) => pending(d.maxAnglers) },
-	{ label: c.comparison.rows.engine, value: (d: (typeof tours)[number]['data']) => pending(d.specs.engine, '[Motor]') },
-	{ label: c.comparison.rows.fishingType, value: (d: (typeof tours)[number]['data']) => pending(d.specs.fishingType?.[lang], '—') },
-	{ label: c.comparison.rows.range, value: (d: (typeof tours)[number]['data']) => pending(d.specs.range?.[lang], '—') },
-	{ label: c.comparison.rows.idealFor, value: (d: (typeof tours)[number]['data']) => pending(d.specs.idealFor?.[lang], '—') },
+// Disposición del listado: destacados a todo el ancho; si los demás quedan impares, el último también
+const regular = destinations.filter((d) => !d.data.featured);
+const isWide = (d: Destination) => regular.length % 2 === 1 && d === regular.at(-1);
+
+type Data = Destination['data'];
+const rows: { label: string; value: (d: Data) => string }[] = [
+	{ label: c.comparison.rows.country, value: (d) => d.country[lang] },
+	{ label: c.comparison.rows.fishingType, value: (d) => pending(d.fishingType?.[lang], '—') },
+	{ label: c.comparison.rows.species, value: (d) => pending(d.species?.[lang], '—') },
+	{ label: c.comparison.rows.duration, value: (d) => fill(c.detail.days, { n: pending(d.duration.days) }) },
+	{ label: c.comparison.rows.season, value: (d) => pending(d.season?.[lang], '—') },
+	{ label: c.comparison.rows.departure, value: (d) => pending(d.departure?.[lang], '—') },
 ];
 
 const schema = {
@@ -42,11 +56,11 @@ const schema = {
 	'@type': 'ItemList',
 	name: c.seo.title,
 	inLanguage: localeMeta[lang].htmlLang,
-	itemListElement: tours.map((tour, i) => ({
+	itemListElement: destinations.map((d, i) => ({
 		'@type': 'ListItem',
 		position: i + 1,
-		url: new URL(tourPath(lang, tour.id), siteUrl).href,
-		name: tour.data.name,
+		url: new URL(destinationPath(lang, d.id), siteUrl).href,
+		name: d.data.name,
 	})),
 	provider: { '@type': 'TravelAgency', name: site.name },
 };
@@ -71,26 +85,25 @@ const schema = {
 		</div>
 	</section>
 
-	<!-- Tarjetas -->
-	<section class="tours-list">
-		<div class="container tours-grid">
+	<!-- Destinos -->
+	<section class="destinations-list">
+		<div class="container destinations-grid">
 			{
-				tours.map((tour) => (
-					<TourCard
+				destinations.map((d) => (
+					<DestinationCard
 						lang={lang}
-						title={tour.data.name}
-						href={tourPath(lang, tour.id)}
-						quoteHref={tourQuotePath(lang, tour.id)}
-						description={tour.data.summary[lang]}
-						category={tour.data.category?.[lang]}
-						lengthFt={tour.data.lengthFt}
-						maxAnglers={tour.data.maxAnglers}
-						image={tour.data.cover}
-						imageAlt={tour.data.coverAlt?.[lang]}
-						featured={tour.data.featured}
+						name={d.data.name}
+						href={destinationPath(lang, d.id)}
+						quoteHref={destinationQuotePath(lang, d.id)}
+						eyebrow={destinationEyebrow(d.data, lang)}
+						facts={destinationFacts(d.data, lang, c.detail.days)}
+						summary={d.data.summary[lang]}
+						viewLabel={c.viewDestination}
+						image={d.data.cover}
+						imageAlt={d.data.coverAlt?.[lang]}
+						featured={d.data.featured}
 						featuredLabel={c.featuredLabel}
-						headingLevel="h2"
-						showDetailsButton
+						wide={isWide(d)}
 					/>
 				))
 			}
@@ -108,10 +121,9 @@ const schema = {
 						<tr>
 							<td></td>
 							{
-								tours.map((tour) => (
+								destinations.map((d) => (
 									<th scope="col">
-										<a href={tourPath(lang, tour.id)}>{tour.data.name}</a>
-										{tour.data.featured && <span class="badge">{c.featuredLabel}</span>}
+										<a href={destinationPath(lang, d.id)}>{d.data.name}</a>
 									</th>
 								))
 							}
@@ -122,8 +134,8 @@ const schema = {
 							rows.map((row) => (
 								<tr>
 									<th scope="row">{row.label}</th>
-									{tours.map((tour) => (
-										<td>{row.value(tour.data)}</td>
+									{destinations.map((d) => (
+										<td>{row.value(d.data)}</td>
 									))}
 								</tr>
 							))
@@ -134,46 +146,8 @@ const schema = {
 		</div>
 	</section>
 
-	<!-- Hotel -->
-	<LodgeSection lang={lang} />
-
-	<!-- Incluye / no incluye -->
-	<section class="section" aria-labelledby="inc-title">
-		<div class="container">
-			<SectionHeading id="inc-title" eyebrow={c.includes.eyebrow} title={c.includes.title} />
-			<div class="includes-grid">
-				<div class="includes-box surface-inverse">
-					<h3>{c.includes.includedTitle}</h3>
-					<ul role="list">
-						{
-							c.includes.included.map((item) => (
-								<li>
-									<Icon name="check" size={22} strokeWidth={2.25} class="inc-icon" />
-									{item}
-								</li>
-							))
-						}
-					</ul>
-				</div>
-				<div class="includes-box includes-box--outline">
-					<h3>{c.includes.excludedTitle}</h3>
-					<ul role="list">
-						{
-							c.includes.excluded.map((item) => (
-								<li>
-									<svg class="inc-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14" /></svg>
-									{item}
-								</li>
-							))
-						}
-					</ul>
-				</div>
-			</div>
-		</div>
-	</section>
-
-	<!-- Preguntas frecuentes -->
-	<section class="section faq-section" aria-labelledby="faq-title">
+	<!-- Preguntas frecuentes generales -->
+	<section class="section" aria-labelledby="faq-title">
 		<div class="container split">
 			<SectionHeading id="faq-title" eyebrow={c.faq.eyebrow} title={c.faq.title} intro={c.faq.intro} />
 			<FaqList items={c.faq.items} class="faq-list" />
@@ -217,14 +191,20 @@ const schema = {
 		color: var(--color-text-muted);
 	}
 
-	.tours-list {
+	.destinations-list {
 		padding-bottom: var(--section-space);
 	}
 
-	.tours-grid {
+	.destinations-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(min(100%, 18.75rem), 1fr));
+		grid-template-columns: 1fr;
 		gap: var(--space-7);
+	}
+
+	@media (min-width: 48rem) {
+		.destinations-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
 	}
 
 	/* --- Comparativa --- */
@@ -240,7 +220,7 @@ const schema = {
 
 	table {
 		width: 100%;
-		min-width: 45rem;
+		min-width: 53.75rem;
 		border-collapse: collapse;
 	}
 
@@ -274,21 +254,8 @@ const schema = {
 		text-decoration: underline;
 	}
 
-	.badge {
-		display: inline-block;
-		margin-left: var(--space-2);
-		padding: 2px var(--space-2);
-		border-radius: var(--radius-sm);
-		background: var(--color-cta);
-		color: var(--color-on-cta);
-		font-family: var(--font-text);
-		font-size: var(--text-xs);
-		letter-spacing: 0.1em;
-		vertical-align: middle;
-	}
-
 	tbody th {
-		width: 22%;
+		width: 20%;
 		font-weight: var(--weight-semibold);
 	}
 
@@ -296,55 +263,7 @@ const schema = {
 		color: var(--color-text-muted);
 	}
 
-	/* --- Incluye --- */
-	.includes-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
-		gap: var(--space-7);
-		margin-top: var(--space-12);
-	}
-
-	.includes-box {
-		padding: var(--space-10);
-		border-radius: var(--radius-lg);
-	}
-
-	.includes-box--outline {
-		border: 1px solid var(--color-border-strong);
-		color: var(--color-text-muted);
-	}
-
-	.includes-box h3 {
-		font-size: var(--text-2xl);
-		color: var(--color-heading);
-	}
-
-	.includes-box ul {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-3);
-		margin-top: var(--space-6);
-	}
-
-	.includes-box li {
-		display: flex;
-		gap: var(--space-3);
-	}
-
-	.includes-box :global(.inc-icon) {
-		flex-shrink: 0;
-		margin-top: 3px;
-	}
-
-	.surface-inverse :global(.inc-icon) {
-		color: var(--color-inverse-accent);
-	}
-
 	/* --- FAQ --- */
-	.faq-section {
-		padding-top: 0;
-	}
-
 	.split {
 		display: flex;
 		flex-wrap: wrap;

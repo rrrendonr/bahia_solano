@@ -16,9 +16,9 @@
 		"email": "Correo",
 		"phone": "Teléfono / WhatsApp",
 		"phonePlaceholder": "+57 300 000 0000",
-		"tour": "Tour de interés",
+		"tour": "Destino de interés",
 		"tourUndecided": "Aún no sé",
-		"tourHint": "Viene seleccionado si llegaste desde el botón “Cotizar” de un tour.",
+		"tourHint": "Viene seleccionado si llegaste desde el botón “Cotizar” de un destino.",
 		"message": "Mensaje",
 		"optional": "(opcional)",
 		"messagePlaceholder": "Fechas tentativas, cuántos viajan, dudas…",
@@ -26,7 +26,7 @@
 		"whatsapp": "Enviar por WhatsApp",
 		"note": "“Enviar solicitud” nos llega por correo. “Enviar por WhatsApp” abre WhatsApp con tus datos ya escritos. [Nota de privacidad.]",
 		"emailSubject": "Nueva solicitud de cotización — Bahía Solano Pesca",
-		"whatsappTemplate": "Hola, quiero cotizar un viaje de pesca.\nNombre: {name}\nCorreo: {email}\nTeléfono: {phone}\nTour: {tour}\nMensaje: {message}"
+		"whatsappTemplate": "Hola, quiero cotizar un viaje de pesca.\nNombre: {name}\nCorreo: {email}\nTeléfono: {phone}\nDestino: {tour}\nMensaje: {message}"
 	},
 	"channels": {
 		"title": "Escríbenos directo",

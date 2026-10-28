@@ -20,10 +20,11 @@ export const site = {
 		formspreeId: '',
 	},
 
-	// TODO: URLs reales de redes sociales (las vacías no se muestran)
+	// Redes sociales (las vacías no se muestran)
 	social: {
-		instagram: '',
-		facebook: '',
+		facebook: 'https://web.facebook.com/FishingByColombia',
+		instagram: 'https://www.instagram.com/bahiasolanopesca/',
+		tiktok: 'https://www.tiktok.com/@bahiasolanopesca',
 		youtube: '',
 	},
 } as const;

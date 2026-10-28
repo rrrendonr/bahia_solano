@@ -1,47 +1,28 @@
 {
 	"seo": {
 		"title": "Tours de pesca deportiva",
-		"description": "Tres botes para pescar en Bahía Solano. Todos los tours incluyen vuelo desde Medellín, hospedaje en el Darien Lodge, tripulación, guía y equipo."
+		"description": "Viajes de pesca deportiva a Bahía Solano, Chile, el Orinoco y Costa Rica. Compara destinos, especies y temporadas, y cotiza tu viaje."
 	},
 	"hero": {
 		"eyebrow": "Tours de pesca",
-		"title": "Un paquete.",
-		"titleAccent": "Tres botes.",
-		"intro": "Todos los tours incluyen vuelo desde Medellín, Darien Lodge, tripulación, guía y equipo. Lo que eliges es el bote."
+		"title": "Cuatro destinos.",
+		"titleAccent": "Una sola obsesión.",
+		"intro": "Del Pacífico chocoano a [Chile], del Orinoco a Costa Rica. [Una frase sobre qué tienen en común los viajes.]"
 	},
-	"featuredLabel": "El más pedido",
+	"featuredLabel": "Destino principal",
+	"viewDestination": "Ver destino",
 	"comparison": {
 		"eyebrow": "Compara",
-		"title": "¿Cuál bote es para ti?",
-		"caption": "Comparativa de los tres botes",
+		"title": "¿A dónde vas a pescar?",
+		"caption": "Comparativa de destinos",
 		"rows": {
-			"length": "Eslora",
-			"anglers": "Pescadores máx.",
-			"engine": "Motor",
+			"country": "País",
 			"fishingType": "Tipo de pesca",
-			"range": "Distancia de salida",
-			"idealFor": "Ideal para"
+			"species": "Especies",
+			"duration": "Duración",
+			"season": "Mejor temporada",
+			"departure": "Sale desde"
 		}
-	},
-	"includes": {
-		"eyebrow": "En todos los tours",
-		"title": "Qué incluye y qué no",
-		"includedTitle": "Incluye",
-		"included": [
-			"Vuelo Medellín – Bahía Solano, ida y regreso",
-			"Hospedaje en el Darien Lodge",
-			"Bote con capitán y tripulación",
-			"Guía de pesca",
-			"Equipo de pesca",
-			"[¿Alimentación? ¿Traslados aeropuerto–lodge?]"
-		],
-		"excludedTitle": "No incluye",
-		"excluded": [
-			"[Ej.: vuelos hasta Medellín]",
-			"[Ej.: bebidas alcohólicas]",
-			"[Ej.: propinas a la tripulación]",
-			"[Ej.: seguro de viaje]"
-		]
 	},
 	"faq": {
 		"eyebrow": "Preguntas frecuentes",
@@ -54,7 +35,7 @@
 			},
 			{
 				"question": "¿Necesito licencia de pesca?",
-				"answer": "[Respuesta.]"
+				"answer": "[Respuesta: puede depender del país de destino.]"
 			},
 			{
 				"question": "¿Qué debo llevar?",
@@ -71,9 +52,9 @@
 		]
 	},
 	"cta": {
-		"title": "¿Ya elegiste bote?",
-		"titleAccent": "Separa tus fechas.",
-		"text": "Cuéntanos fechas, cuántos viajan y qué bote te interesa. Te respondemos con disponibilidad y precio."
+		"title": "¿No sabes cuál elegir?",
+		"titleAccent": "Te ayudamos.",
+		"text": "Cuéntanos qué especie quieres pescar y cuándo puedes viajar. Te recomendamos el destino y te enviamos el precio."
 	},
 	"detail": {
 		"summaryTitle": "Resumen",
@@ -81,31 +62,23 @@
 			"duration": "Duración",
 			"durationValue": "{days} días / {nights} noches",
 			"fishingDays": "Días de pesca",
-			"anglers": "Pescadores",
-			"anglersValue": "Hasta {n}",
+			"species": "Especies",
+			"season": "Temporada",
 			"departure": "Sale desde",
-			"departureValue": "Medellín (vuelo incluido)",
 			"lodging": "Hospedaje"
 		},
-		"boatEyebrow": "El bote",
-		"specs": {
-			"length": "Eslora",
-			"engine": "Motor",
-			"capacity": "Capacidad",
-			"crew": "Tripulación",
-			"fishingType": "Tipo de pesca",
-			"onboard": "A bordo"
-		},
+		"days": "{n} días",
+		"aboutEyebrow": "El destino",
 		"itineraryEyebrow": "Itinerario",
 		"itineraryTitle": "Día a día",
-		"includedNote": "Vuelo, hospedaje, tripulación, guía y equipo incluidos.",
-		"includedLink": "Ver qué incluye y qué no",
-		"otherToursTitle": "Otros botes",
-		"galleryLabel": "Fotos del bote",
-		"cta": {
-			"title": "¿Este es tu bote?",
-			"titleAccent": "Separa tus fechas.",
-			"text": "Cuéntanos fechas y cuántos viajan. Te respondemos con disponibilidad y el precio del paquete."
-		}
+		"includesTitle": "Qué incluye y qué no",
+		"includedTitle": "Incluye",
+		"excludedTitle": "No incluye",
+		"otherTitle": "Otros destinos",
+		"galleryLabel": "Fotos del destino",
+		"quote": "Cotizar este viaje",
+		"ctaTitle": "¿Te vas a {name}?",
+		"ctaTitleAccent": "Separa tus fechas.",
+		"ctaText": "Cuéntanos fechas y cuántos viajan. Te respondemos con disponibilidad y el precio del paquete."
 	}
 }

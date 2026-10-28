@@ -1,10 +1,13 @@
 ---
 /**
- * Galería del tour: foto principal + miniaturas que la cambian.
- * Sin fotos cargadas muestra placeholders con la misma estructura.
+ * Galería del destino: foto principal + miniaturas seleccionables.
+ * - Tocar una miniatura muestra esa foto en grande.
+ * - Flechas sobre la foto principal y teclas ← → para recorrerlas.
+ * - Sin fotos cargadas funciona igual con placeholders, para revisar el diseño.
  */
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
+import Icon from '../ui/Icon.astro';
 import type { Locale } from '../../i18n/config';
 import { useTranslations } from '../../i18n/ui';
 
@@ -17,103 +20,198 @@ interface Props {
 	lang: Locale;
 	photos: Photo[];
 	label: string;
-	/** Texto del placeholder cuando no hay fotos */
+	/** Texto base de los placeholders cuando no hay fotos */
 	placeholder?: string;
+	/** Cantidad de placeholders cuando no hay fotos */
+	placeholderCount?: number;
 }
 
-const { lang, photos, label, placeholder = '[Foto]' } = Astro.props;
+const { lang, photos, label, placeholder = '[Foto]', placeholderCount = 5 } = Astro.props;
 const t = useTranslations(lang);
-const total = photos.length;
+
+type Item = { photo?: Photo; caption: string };
+const items: Item[] = photos.length
+	? photos.map((photo) => ({ photo, caption: photo.alt }))
+	: Array.from({ length: placeholderCount }, (_, i) => ({ caption: `${placeholder} ${i + 1}` }));
+const total = items.length;
 ---
 
 <section class="gallery" aria-label={label} data-gallery>
+	<div class="gallery-main">
+		{
+			items.map((item, i) =>
+				item.photo ? (
+					<Image
+						src={item.photo.src}
+						alt={item.photo.alt}
+						widths={[640, 960, 1280, 1600]}
+						sizes="(min-width: 80rem) 860px, (min-width: 64rem) 66vw, 100vw"
+						loading={i === 0 ? 'eager' : 'lazy'}
+						fetchpriority={i === 0 ? 'high' : undefined}
+						class="slide"
+						data-gallery-slide={i}
+						hidden={i !== 0}
+					/>
+				) : (
+					<div class="slide media-placeholder" data-gallery-slide={i} hidden={i !== 0} aria-hidden="true">
+						{item.caption}
+					</div>
+				),
+			)
+		}
+
+		{
+			total > 1 && (
+				<>
+					<button type="button" class="nav nav--prev" aria-label={t('lightbox.prev')} data-gallery-prev>
+						<Icon name="chevron-left" size={24} strokeWidth={2.25} />
+					</button>
+					<button type="button" class="nav nav--next" aria-label={t('lightbox.next')} data-gallery-next>
+						<Icon name="chevron-right" size={24} strokeWidth={2.25} />
+					</button>
+					<p class="counter" aria-live="polite">
+						<span data-gallery-current>1</span> / {total}
+					</p>
+				</>
+			)
+		}
+	</div>
+
 	{
-		total > 0 ? (
-			<>
-				<div class="gallery-main">
-					{photos.map((photo, i) => (
-						<Image
-							src={photo.src}
-							alt={photo.alt}
-							widths={[640, 960, 1280, 1600]}
-							sizes="(min-width: 80rem) 860px, (min-width: 64rem) 66vw, 100vw"
-							loading={i === 0 ? 'eager' : 'lazy'}
-							fetchpriority={i === 0 ? 'high' : undefined}
-							data-gallery-slide={i}
-							hidden={i !== 0}
-						/>
-					))}
-				</div>
-				{total > 1 && (
-					<ul role="list" class="gallery-thumbs">
-						{photos.map((photo, i) => (
-							<li>
-								<button
-									type="button"
-									class="thumb"
-									aria-pressed={i === 0 ? 'true' : 'false'}
-									aria-label={t('gallery.show', { n: i + 1, total })}
-									data-gallery-thumb={i}
-								>
-									<Image src={photo.src} alt="" widths={[160, 240]} sizes="160px" loading="lazy" />
-								</button>
-							</li>
-						))}
-					</ul>
-				)}
-			</>
-		) : (
-			<>
-				<div class="gallery-main media-placeholder" aria-hidden="true">{placeholder}</div>
-				<ul role="list" class="gallery-thumbs" aria-hidden="true">
-					{[1, 2, 3, 4, 5].map((n) => (
-						<li>
-							<div class="thumb media-placeholder">{n}</div>
-						</li>
-					))}
-				</ul>
-			</>
+		total > 1 && (
+			<ul role="list" class="gallery-thumbs">
+				{items.map((item, i) => (
+					<li>
+						<button
+							type="button"
+							class="thumb"
+							aria-pressed={i === 0 ? 'true' : 'false'}
+							aria-label={t('gallery.show', { n: i + 1, total })}
+							data-gallery-thumb={i}
+						>
+							{item.photo ? (
+								<Image src={item.photo.src} alt="" widths={[160, 240]} sizes="160px" loading="lazy" />
+							) : (
+								<span class="media-placeholder" aria-hidden="true">
+									{i + 1}
+								</span>
+							)}
+						</button>
+					</li>
+				))}
+			</ul>
 		)
 	}
 </section>
 
 <script>
 	document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((gallery) => {
-		const slides = gallery.querySelectorAll<HTMLElement>('[data-gallery-slide]');
-		const thumbs = gallery.querySelectorAll<HTMLButtonElement>('[data-gallery-thumb]');
+		const slides = Array.from(gallery.querySelectorAll<HTMLElement>('[data-gallery-slide]'));
+		const thumbs = Array.from(gallery.querySelectorAll<HTMLButtonElement>('[data-gallery-thumb]'));
+		const current = gallery.querySelector<HTMLElement>('[data-gallery-current]');
+		if (slides.length < 2) return;
 
-		thumbs.forEach((thumb) => {
-			thumb.addEventListener('click', () => {
-				const index = thumb.dataset.galleryThumb;
-				slides.forEach((slide) => {
-					slide.hidden = slide.dataset.gallerySlide !== index;
-				});
-				thumbs.forEach((other) => {
-					other.setAttribute('aria-pressed', String(other === thumb));
-				});
+		let index = 0;
+
+		const show = (next: number, focusThumb = false) => {
+			index = (next + slides.length) % slides.length;
+			slides.forEach((slide, i) => {
+				slide.hidden = i !== index;
 			});
+			thumbs.forEach((thumb, i) => {
+				thumb.setAttribute('aria-pressed', String(i === index));
+			});
+			if (current) current.textContent = String(index + 1);
+			const active = thumbs[index];
+			active?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+			if (focusThumb) active?.focus();
+		};
+
+		thumbs.forEach((thumb, i) => thumb.addEventListener('click', () => show(i)));
+		gallery.querySelector('[data-gallery-prev]')?.addEventListener('click', () => show(index - 1));
+		gallery.querySelector('[data-gallery-next]')?.addEventListener('click', () => show(index + 1));
+
+		// Flechas del teclado mientras el foco está dentro de la galería
+		gallery.addEventListener('keydown', (event) => {
+			if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+			event.preventDefault();
+			const onThumb = (event.target as HTMLElement).closest('[data-gallery-thumb]') !== null;
+			show(index + (event.key === 'ArrowRight' ? 1 : -1), onThumb);
 		});
 	});
 </script>
 
 <style>
 	.gallery-main {
+		position: relative;
 		aspect-ratio: 16 / 10;
 		overflow: hidden;
 		border-radius: var(--radius-lg);
+		background: var(--color-navy-900);
 	}
 
-	.gallery-main :global(img) {
+	.gallery-main :global(.slide) {
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
 		animation: gallery-fade var(--duration-menu) var(--ease-out);
 	}
 
-	.gallery-main :global(img[hidden]) {
+	.gallery-main :global(.slide[hidden]) {
 		display: none;
 	}
 
+	/* --- Flechas y contador --- */
+	.nav {
+		position: absolute;
+		top: 50%;
+		display: grid;
+		place-items: center;
+		width: 3rem;
+		height: 3rem;
+		margin-top: -1.5rem;
+		border: 0;
+		border-radius: var(--radius-full);
+		background: rgb(250 249 246 / 0.92);
+		color: var(--color-navy-900);
+		box-shadow: 0 4px 16px rgb(0 26 56 / 0.25);
+		cursor: pointer;
+		transition:
+			transform var(--duration-press) var(--ease-out),
+			background-color var(--duration-hover) var(--ease-out);
+	}
+
+	.nav--prev {
+		left: var(--space-4);
+	}
+
+	.nav--next {
+		right: var(--space-4);
+	}
+
+	.nav:active {
+		transform: scale(0.97);
+	}
+
+	@media (hover: hover) and (pointer: fine) {
+		.nav:hover {
+			background: var(--color-sand-50);
+		}
+	}
+
+	.counter {
+		position: absolute;
+		right: var(--space-4);
+		bottom: var(--space-4);
+		padding: var(--space-1) var(--space-3);
+		border-radius: var(--radius-full);
+		background: rgb(0 26 56 / 0.75);
+		color: var(--color-sand-50);
+		font-size: var(--text-sm);
+		font-weight: var(--weight-semibold);
+	}
+
+	/* --- Miniaturas --- */
 	.gallery-thumbs {
 		display: grid;
 		grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -129,31 +227,36 @@ const total = photos.length;
 		border: 0;
 		border-radius: var(--radius-md);
 		overflow: hidden;
-		transition: transform var(--duration-press) var(--ease-out);
-	}
-
-	button.thumb {
 		background: none;
 		cursor: pointer;
+		opacity: 0.7;
+		transition:
+			transform var(--duration-press) var(--ease-out),
+			opacity var(--duration-hover) var(--ease-out);
 	}
 
-	div.thumb {
-		display: flex;
-	}
-
-	button.thumb:active {
+	.thumb:active {
 		transform: scale(0.97);
 	}
 
-	.thumb :global(img) {
+	.thumb :global(img),
+	.thumb .media-placeholder {
+		display: flex;
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
 	}
 
 	.thumb[aria-pressed='true'] {
+		opacity: 1;
 		outline: 3px solid var(--color-cta);
 		outline-offset: 2px;
+	}
+
+	@media (hover: hover) and (pointer: fine) {
+		.thumb:hover {
+			opacity: 1;
+		}
 	}
 
 	@keyframes gallery-fade {

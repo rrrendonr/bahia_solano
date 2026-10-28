@@ -8,10 +8,19 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import heroImage from '../../assets/images/hero.jpg';
 import heroMobileImage from '../../assets/images/hero-mobile.jpg';
 import ArtDirectedImage from '../../components/ui/ArtDirectedImage.astro';
+import SponsorsMarquee from '../../components/sections/SponsorsMarquee.astro';
 import Button from '../../components/ui/Button.astro';
 import SectionHeading from '../../components/ui/SectionHeading.astro';
 import StepCard from '../../components/cards/StepCard.astro';
-import TourCard from '../../components/cards/TourCard.astro';
+import DestinationCard from '../../components/cards/DestinationCard.astro';
+import { getEntry } from 'astro:content';
+import {
+	destinationEyebrow,
+	destinationFacts,
+	destinationPath,
+	destinationQuotePath,
+	getDestinations,
+} from '../../lib/destinations';
 import TestimonialCard from '../../components/cards/TestimonialCard.astro';
 import { getLangStaticPaths, isLocale, localeMeta } from '../../i18n/config';
 import { getAlternates, localizePath } from '../../i18n/routes';
@@ -45,12 +54,11 @@ const content = {
 		steps: [
 			{ icon: 'plane', title: 'Vuelo desde Medellín', text: 'Ida y regreso a Bahía Solano.' },
 			{ icon: 'house', title: 'Darien Lodge', text: 'Hospedaje durante todo el viaje.' },
-			{ icon: 'sailboat', title: 'Bote con tripulación', text: 'Tres botes para elegir, con capitán, tripulación y guía.' },
+			{ icon: 'sailboat', title: 'Bote con tripulación', text: 'Sales con capitán, tripulación y un guía que conoce la zona.' },
 			{ icon: 'fish', title: 'Equipo de pesca', text: 'Cañas, carretes y señuelos incluidos.' },
 		],
-		toursEyebrow: 'Elige tu bote',
-		toursTitle: 'Tres botes, tres maneras de salir al mar',
-		featured: 'El más pedido',
+		toursEyebrow: 'Destinos',
+		toursTitle: 'A dónde vamos a pescar',
 		testimonialsEyebrow: 'Quienes ya fueron',
 	},
 	en: {
@@ -71,26 +79,21 @@ const content = {
 		steps: [
 			{ icon: 'plane', title: 'Flights from Medellín', text: 'Round trip to Bahía Solano.' },
 			{ icon: 'house', title: 'Darien Lodge', text: 'Lodging for the whole trip.' },
-			{ icon: 'sailboat', title: 'Boat with crew', text: 'Three boats to choose from, with captain, crew and guide.' },
+			{ icon: 'sailboat', title: 'Boat with crew', text: 'You head out with a captain, crew and a guide who knows the area.' },
 			{ icon: 'fish', title: 'Fishing tackle', text: 'Rods, reels and lures included.' },
 		],
-		toursEyebrow: 'Choose your boat',
-		toursTitle: 'Three boats, three ways out to sea',
-		featured: 'Most popular',
+		toursEyebrow: 'Destinations',
+		toursTitle: 'Where we fish',
 		testimonialsEyebrow: 'From our guests',
 	},
 } as const;
 
 const c = content[lang];
 
-// Datos provisionales: se moverán a una colección de contenido en el siguiente paso.
-const demoTours = [1, 2, 3].map((n) => ({
-	slug: `bote-${n}`,
-	title: `[Bote ${n}]`,
-	description: lang === 'es' ? '[Para quién es este bote y qué pesca permite.]' : '[Who this boat is for and what it can fish.]',
-	category: lang === 'es' ? '[Categoría]' : '[Category]',
-	featured: n === 2,
-}));
+// Destinos (los mismos del listado de Tours)
+const destinations = await getDestinations();
+const toursText = (await getEntry('toursPage', lang))?.data;
+const regularDestinations = destinations.filter((d) => !d.data.featured);
 
 // Imagen para redes sociales (1200×630) generada a partir de la foto del hero
 const ogImage = await getImage({ src: heroImage, width: 1200, height: 630, fit: 'cover', format: 'jpg' });
@@ -108,6 +111,8 @@ const schema = {
 		addressCountry: site.country,
 	},
 	areaServed: site.locality,
+	// Perfiles oficiales: ayudan a Google a asociar las redes con la marca
+	sameAs: Object.values(site.social).filter(Boolean),
 };
 ---
 
@@ -158,24 +163,31 @@ const schema = {
 		</div>
 	</section>
 
-	<!-- Tours (TourCard) -->
+	<!-- Destinos -->
 	<section class="section section--flush-top" aria-labelledby="tours-title">
 		<div class="container">
 			<SectionHeading id="tours-title" eyebrow={c.toursEyebrow} title={c.toursTitle} />
 			<div class="tours-grid">
 				{
-					demoTours.map((tour) => (
-						<TourCard
-							lang={lang}
-							title={tour.title}
-							href={localizePath('tours', lang, tour.slug)}
-							quoteHref={`${localizePath('contact', lang)}?tour=${tour.slug}`}
-							description={tour.description}
-							category={tour.category}
-							featured={tour.featured}
-							featuredLabel={c.featured}
-						/>
-					))
+					toursText &&
+						destinations.map((d) => (
+							<DestinationCard
+								lang={lang}
+								name={d.data.name}
+								href={destinationPath(lang, d.id)}
+								quoteHref={destinationQuotePath(lang, d.id)}
+								eyebrow={destinationEyebrow(d.data, lang)}
+								facts={destinationFacts(d.data, lang, toursText.detail.days)}
+								summary={d.data.summary[lang]}
+								viewLabel={toursText.viewDestination}
+								image={d.data.cover}
+								imageAlt={d.data.coverAlt?.[lang]}
+								featured={d.data.featured}
+								featuredLabel={toursText.featuredLabel}
+								wide={regularDestinations.length % 2 === 1 && d === regularDestinations.at(-1)}
+								headingLevel="h3"
+							/>
+						))
 				}
 			</div>
 		</div>
@@ -191,6 +203,9 @@ const schema = {
 			</div>
 		</div>
 	</section>
+
+	<!-- Patrocinadores -->
+	<SponsorsMarquee lang={lang} />
 </BaseLayout>
 
 <style>
@@ -289,9 +304,14 @@ const schema = {
 		padding-top: 0;
 	}
 
+	@media (min-width: 48rem) {
+		.tours-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
 	.tours-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(min(100%, 18.75rem), 1fr));
 		gap: var(--space-7);
 		margin-top: var(--space-12);
 	}

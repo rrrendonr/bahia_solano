@@ -7,7 +7,7 @@ import ContactForm from '../components/contact/ContactForm.astro';
 import FaqList from '../components/sections/FaqList.astro';
 import { localeMeta, type Locale } from '../i18n/config';
 import { getAlternates, localizePath } from '../i18n/routes';
-import { getTours } from '../lib/tours';
+import { getDestinations } from '../lib/destinations';
 import { site } from '../config/site';
 
 interface Props {
@@ -25,7 +25,7 @@ const faqItems = c.faq.fromTours
 	.map((index) => toursText?.data.faq.items[index])
 	.filter((item): item is NonNullable<typeof item> => Boolean(item));
 
-const tours = (await getTours()).map((tour) => ({ id: tour.id, name: tour.data.name }));
+const tours = (await getDestinations()).map((d) => ({ id: d.id, name: d.data.name }));
 const alternates = getAlternates('contact');
 const siteUrl = Astro.site ?? Astro.url;
 

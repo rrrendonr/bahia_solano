@@ -73,23 +73,25 @@ const about = defineCollection({
 });
 
 /**
- * Tours: un archivo JSON por bote en src/content/tours/. El nombre del archivo es el slug
- * de la URL (igual en ambos idiomas): bote-1.json → /es/tours/bote-1/ y /en/tours/bote-1/.
+ * Destinos: un archivo JSON por destino en src/content/destinations/.
+ * El nombre del archivo es el slug de la URL (igual en ambos idiomas):
+ * chile.json → /es/tours/chile/ y /en/tours/chile/.
  * Los datos numéricos son opcionales: mientras falten se muestran como [N].
  */
-const tours = defineCollection({
-	loader: glob({ pattern: '*.json', base: './src/content/tours' }),
+const destinations = defineCollection({
+	loader: glob({ pattern: '*.json', base: './src/content/destinations' }),
 	schema: ({ image }) =>
 		z.object({
 			name: z.string(),
 			order: z.number().int(),
+			/** Destino destacado: tarjeta grande y primera en el listado */
 			featured: z.boolean().default(false),
-			category: localized.optional(),
+			country: localized,
+			region: localized.optional(),
+			/** Texto corto para la tarjeta del listado */
 			summary: localized,
 			headline: localized,
-			description: localized,
-			lengthFt: z.number().positive().optional(),
-			maxAnglers: z.number().int().positive().optional(),
+			paragraphs: z.array(localized).default([]),
 			duration: z
 				.object({
 					days: z.number().int().positive().optional(),
@@ -97,22 +99,24 @@ const tours = defineCollection({
 					fishingDays: z.number().int().positive().optional(),
 				})
 				.default({}),
-			specs: z.object({
-				engine: z.string().optional(),
-				crew: localized.optional(),
-				fishingType: localized.optional(),
-				range: localized.optional(),
-				idealFor: localized.optional(),
-				onboard: localized.optional(),
-			}),
+			mainSpecies: localized.optional(),
+			species: localized.optional(),
+			fishingType: localized.optional(),
+			season: localized.optional(),
+			departure: localized.optional(),
+			lodging: z.string().optional(),
+			/** Datos extra para la tarjeta (p. ej. "vuelo desde Medellín") */
+			highlights: z.array(localized).default([]),
 			itinerary: z.array(z.object({ day: localized, title: localized, text: localized })).default([]),
+			included: z.array(localized).default([]),
+			excluded: z.array(localized).default([]),
 			cover: image().optional(),
 			coverAlt: localized.optional(),
 			gallery: z.array(z.object({ src: image(), alt: localized })).default([]),
 		}),
 });
 
-/** Textos de la página de Tours y de las páginas de detalle: un archivo por idioma. */
+/** Textos del listado de Tours y de la plantilla de destino: un archivo por idioma. */
 const toursPage = defineCollection({
 	loader: glob({ pattern: '*.json', base: './src/content/tours-page' }),
 	schema: z.object({
@@ -124,26 +128,19 @@ const toursPage = defineCollection({
 			intro: z.string(),
 		}),
 		featuredLabel: z.string(),
+		viewDestination: z.string(),
 		comparison: z.object({
 			eyebrow: z.string(),
 			title: z.string(),
 			caption: z.string(),
 			rows: z.object({
-				length: z.string(),
-				anglers: z.string(),
-				engine: z.string(),
+				country: z.string(),
 				fishingType: z.string(),
-				range: z.string(),
-				idealFor: z.string(),
+				species: z.string(),
+				duration: z.string(),
+				season: z.string(),
+				departure: z.string(),
 			}),
-		}),
-		includes: z.object({
-			eyebrow: z.string(),
-			title: z.string(),
-			includedTitle: z.string(),
-			included: z.array(z.string()),
-			excludedTitle: z.string(),
-			excluded: z.array(z.string()),
 		}),
 		faq: z.object({
 			eyebrow: z.string(),
@@ -158,56 +155,27 @@ const toursPage = defineCollection({
 				duration: z.string(),
 				durationValue: z.string(),
 				fishingDays: z.string(),
-				anglers: z.string(),
-				anglersValue: z.string(),
+				species: z.string(),
+				season: z.string(),
 				departure: z.string(),
-				departureValue: z.string(),
 				lodging: z.string(),
 			}),
-			boatEyebrow: z.string(),
-			specs: z.object({
-				length: z.string(),
-				engine: z.string(),
-				capacity: z.string(),
-				crew: z.string(),
-				fishingType: z.string(),
-				onboard: z.string(),
-			}),
+			days: z.string(),
+			aboutEyebrow: z.string(),
 			itineraryEyebrow: z.string(),
 			itineraryTitle: z.string(),
-			includedNote: z.string(),
-			includedLink: z.string(),
-			otherToursTitle: z.string(),
+			includesTitle: z.string(),
+			includedTitle: z.string(),
+			excludedTitle: z.string(),
+			otherTitle: z.string(),
 			galleryLabel: z.string(),
-			cta: z.object({ title: z.string(), titleAccent: z.string(), text: z.string() }),
+			quote: z.string(),
+			/** {name} se reemplaza por el nombre del destino */
+			ctaTitle: z.string(),
+			ctaTitleAccent: z.string(),
+			ctaText: z.string(),
 		}),
 	}),
-});
-
-/**
- * Hotel (Darien Lodge): src/content/lodge/darien-lodge.json.
- * Cada foto pertenece a una categoría (pestaña de la galería). `src` es opcional:
- * mientras no haya foto se muestra un placeholder con el pie de foto.
- */
-const lodge = defineCollection({
-	loader: glob({ pattern: '*.json', base: './src/content/lodge' }),
-	schema: ({ image }) =>
-		z.object({
-			name: z.string(),
-			eyebrow: localized,
-			description: localized,
-			facts: z.array(z.object({ label: localized, value: localized })).default([]),
-			categories: z.array(z.object({ id: z.string(), label: localized })).min(1),
-			photos: z
-				.array(
-					z.object({
-						category: z.string(),
-						caption: localized,
-						src: image().optional(),
-					}),
-				)
-				.default([]),
-		}),
 });
 
 /** Textos de la página de Contacto: un archivo por idioma. */
@@ -257,4 +225,20 @@ const contactPage = defineCollection({
 	}),
 });
 
-export const collections = { team, about, tours, toursPage, lodge, contactPage };
+/**
+ * Patrocinadores: un archivo JSON por patrocinador en src/content/sponsors/.
+ * `logo` es una ruta relativa al JSON (p. ej. "../../assets/sponsors/marca.svg").
+ * Sin logo se muestra el nombre como placeholder. `url` es opcional.
+ */
+const sponsors = defineCollection({
+	loader: glob({ pattern: '*.json', base: './src/content/sponsors' }),
+	schema: ({ image }) =>
+		z.object({
+			name: z.string(),
+			order: z.number().int(),
+			logo: image().optional(),
+			url: z.url().optional(),
+		}),
+});
+
+export const collections = { team, about, destinations, toursPage, contactPage, sponsors };

@@ -1,47 +1,28 @@
 {
 	"seo": {
 		"title": "Sport fishing tours",
-		"description": "Three boats to fish Bahía Solano, Colombia. Every tour includes flights from Medellín, a stay at Darien Lodge, crew, guide and tackle."
+		"description": "Sport fishing trips to Bahía Solano, Chile, the Orinoco and Costa Rica. Compare destinations, species and seasons, and get a quote."
 	},
 	"hero": {
 		"eyebrow": "Fishing tours",
-		"title": "One package.",
-		"titleAccent": "Three boats.",
-		"intro": "Every tour includes flights from Medellín, Darien Lodge, crew, guide and tackle. What you choose is the boat."
+		"title": "Four destinations.",
+		"titleAccent": "One obsession.",
+		"intro": "From Colombia’s Chocó Pacific to [Chile], from the Orinoco to Costa Rica. [One sentence on what the trips have in common.]"
 	},
-	"featuredLabel": "Most popular",
+	"featuredLabel": "Signature destination",
+	"viewDestination": "See destination",
 	"comparison": {
 		"eyebrow": "Compare",
-		"title": "Which boat is yours?",
-		"caption": "Comparison of the three boats",
+		"title": "Where will you fish?",
+		"caption": "Destination comparison",
 		"rows": {
-			"length": "Length",
-			"anglers": "Max anglers",
-			"engine": "Engine",
+			"country": "Country",
 			"fishingType": "Fishing type",
-			"range": "Range",
-			"idealFor": "Ideal for"
+			"species": "Species",
+			"duration": "Duration",
+			"season": "Best season",
+			"departure": "Departs from"
 		}
-	},
-	"includes": {
-		"eyebrow": "On every tour",
-		"title": "What’s included and what’s not",
-		"includedTitle": "Included",
-		"included": [
-			"Round-trip flight Medellín – Bahía Solano",
-			"Lodging at Darien Lodge",
-			"Boat with captain and crew",
-			"Fishing guide",
-			"Fishing tackle",
-			"[Meals? Airport–lodge transfers?]"
-		],
-		"excludedTitle": "Not included",
-		"excluded": [
-			"[E.g. flights to Medellín]",
-			"[E.g. alcoholic drinks]",
-			"[E.g. crew tips]",
-			"[E.g. travel insurance]"
-		]
 	},
 	"faq": {
 		"eyebrow": "FAQ",
@@ -54,7 +35,7 @@
 			},
 			{
 				"question": "Do I need a fishing license?",
-				"answer": "[Answer.]"
+				"answer": "[Answer: it may depend on the destination country.]"
 			},
 			{
 				"question": "What should I bring?",
@@ -71,9 +52,9 @@
 		]
 	},
 	"cta": {
-		"title": "Picked your boat?",
-		"titleAccent": "Lock in your dates.",
-		"text": "Tell us your dates, group size and the boat you like. We’ll reply with availability and price."
+		"title": "Not sure which one?",
+		"titleAccent": "We’ll help.",
+		"text": "Tell us which species you’re after and when you can travel. We’ll suggest the destination and send you the price."
 	},
 	"detail": {
 		"summaryTitle": "Summary",
@@ -81,31 +62,23 @@
 			"duration": "Duration",
 			"durationValue": "{days} days / {nights} nights",
 			"fishingDays": "Fishing days",
-			"anglers": "Anglers",
-			"anglersValue": "Up to {n}",
+			"species": "Species",
+			"season": "Season",
 			"departure": "Departs from",
-			"departureValue": "Medellín (flight included)",
 			"lodging": "Lodging"
 		},
-		"boatEyebrow": "The boat",
-		"specs": {
-			"length": "Length",
-			"engine": "Engine",
-			"capacity": "Capacity",
-			"crew": "Crew",
-			"fishingType": "Fishing type",
-			"onboard": "On board"
-		},
+		"days": "{n} days",
+		"aboutEyebrow": "The destination",
 		"itineraryEyebrow": "Itinerary",
 		"itineraryTitle": "Day by day",
-		"includedNote": "Flights, lodging, crew, guide and tackle included.",
-		"includedLink": "See what’s included and what’s not",
-		"otherToursTitle": "Other boats",
-		"galleryLabel": "Boat photos",
-		"cta": {
-			"title": "Is this your boat?",
-			"titleAccent": "Lock in your dates.",
-			"text": "Tell us your dates and group size. We’ll reply with availability and the package price."
-		}
+		"includesTitle": "What’s included and what’s not",
+		"includedTitle": "Included",
+		"excludedTitle": "Not included",
+		"otherTitle": "Other destinations",
+		"galleryLabel": "Destination photos",
+		"quote": "Quote this trip",
+		"ctaTitle": "Heading to {name}?",
+		"ctaTitleAccent": "Lock in your dates.",
+		"ctaText": "Tell us your dates and group size. We’ll reply with availability and the package price."
 	}
 }

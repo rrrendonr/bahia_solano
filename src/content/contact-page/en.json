@@ -16,9 +16,9 @@
 		"email": "Email",
 		"phone": "Phone / WhatsApp",
 		"phonePlaceholder": "+1 555 000 0000",
-		"tour": "Tour you’re interested in",
+		"tour": "Destination you’re interested in",
 		"tourUndecided": "Not sure yet",
-		"tourHint": "Pre-selected if you came from a tour’s “Get a quote” button.",
+		"tourHint": "Pre-selected if you came from a destination’s “Get a quote” button.",
 		"message": "Message",
 		"optional": "(optional)",
 		"messagePlaceholder": "Tentative dates, group size, questions…",
@@ -26,7 +26,7 @@
 		"whatsapp": "Send via WhatsApp",
 		"note": "“Send request” reaches us by email. “Send via WhatsApp” opens WhatsApp with your details already filled in. [Privacy note.]",
 		"emailSubject": "New quote request — Bahía Solano Pesca",
-		"whatsappTemplate": "Hi, I’d like a quote for a fishing trip.\nName: {name}\nEmail: {email}\nPhone: {phone}\nTour: {tour}\nMessage: {message}"
+		"whatsappTemplate": "Hi, I’d like a quote for a fishing trip.\nName: {name}\nEmail: {email}\nPhone: {phone}\nDestination: {tour}\nMessage: {message}"
 	},
 	"channels": {
 		"title": "Reach us directly",
