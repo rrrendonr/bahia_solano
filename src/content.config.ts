@@ -237,7 +237,8 @@ const sponsors = defineCollection({
 			name: z.string(),
 			order: z.number().int(),
 			logo: image().optional(),
-			url: z.url().optional(),
+			// Vacío ("") = el logo se muestra sin enlace
+			url: z.union([z.url(), z.literal('')]).optional(),
 		}),
 });
 

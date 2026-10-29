@@ -1,8 +1,10 @@
 ---
 /**
- * Franja de patrocinadores: carrusel continuo de logos en gris (a color al pasar el mouse).
+ * Franja de patrocinadores: carrusel continuo de logos a color.
  * - Se pausa al pasar el mouse, al enfocar un logo con teclado y con el botón de pausa (WCAG 2.2.2).
  * - Con "reducir movimiento" activado en el sistema, los logos quedan quietos en una fila.
+ * - Sin saltos: el script repite la lista las veces necesarias para cubrir el ancho de la
+ *   pantalla y desplaza exactamente el ancho de una lista por vuelta, a velocidad constante.
  * Contenido: src/content/sponsors/*.json
  */
 import { getCollection } from 'astro:content';
@@ -20,8 +22,8 @@ const t = useTranslations(lang);
 
 const sponsors = (await getCollection('sponsors')).sort((a, b) => a.data.order - b.data.order);
 
-// Velocidad constante: ~4 s por logo
-const duration = `${Math.max(sponsors.length * 4, 20)}s`;
+// Velocidad del carrusel en píxeles por segundo
+const speed = 40;
 ---
 
 {
@@ -45,13 +47,20 @@ const duration = `${Math.max(sponsors.length * 4, 20)}s`;
 				</button>
 			</div>
 
-			<div class="marquee" style={`--marquee-duration: ${duration}`}>
+			<div class="marquee" data-marquee data-speed={speed}>
 				<div class="marquee-track">
 					{[0, 1].map((copy) => (
 						<ul role="list" class="marquee-list" aria-hidden={copy === 1 ? 'true' : undefined}>
 							{sponsors.map(({ data }) => {
 								const logo = data.logo ? (
-									<Image src={data.logo} alt={copy === 0 ? data.name : ''} height={48} densities={[1, 2]} class="sponsor-logo" />
+									<Image
+										src={data.logo}
+										alt={copy === 0 ? data.name : ''}
+										height={80}
+										densities={[1, 2]}
+										loading="eager"
+										class="sponsor-logo"
+									/>
 								) : (
 									<span class="sponsor-placeholder">{data.name}</span>
 								);
@@ -82,7 +91,42 @@ const duration = `${Math.max(sponsors.length * 4, 20)}s`;
 }
 
 <script>
+	function setupMarquee(marquee: HTMLElement) {
+		const track = marquee.querySelector<HTMLElement>('.marquee-track');
+		const original = track?.querySelector<HTMLElement>('.marquee-list');
+		if (!track || !original) return;
+		const speed = Number(marquee.dataset.speed) || 40;
+
+		const layout = () => {
+			const listWidth = original.getBoundingClientRect().width;
+			if (!listWidth) return;
+
+			// Copias necesarias: cubrir el ancho visible + una lista extra para el reinicio
+			const needed = Math.ceil(marquee.clientWidth / listWidth) + 1;
+			const lists = track.querySelectorAll('.marquee-list');
+			for (let i = lists.length; i < needed; i++) {
+				const clone = original.cloneNode(true) as HTMLElement;
+				clone.setAttribute('aria-hidden', 'true');
+				clone.querySelectorAll('a').forEach((a) => a.setAttribute('tabindex', '-1'));
+				clone.querySelectorAll('img').forEach((img) => img.setAttribute('alt', ''));
+				track.append(clone);
+			}
+
+			// Desplaza exactamente una lista por vuelta, siempre a la misma velocidad
+			track.style.setProperty('--marquee-distance', `${listWidth}px`);
+			track.style.setProperty('--marquee-duration', `${listWidth / speed}s`);
+			marquee.classList.add('is-ready');
+		};
+
+		layout();
+		new ResizeObserver(layout).observe(original);
+		window.addEventListener('resize', layout);
+	}
+
 	document.querySelectorAll<HTMLElement>('[data-sponsors]').forEach((section) => {
+		const marquee = section.querySelector<HTMLElement>('[data-marquee]');
+		if (marquee) setupMarquee(marquee);
+
 		const toggle = section.querySelector<HTMLButtonElement>('[data-sponsors-toggle]');
 		if (!toggle) return;
 		toggle.addEventListener('click', () => {
@@ -156,7 +200,9 @@ const duration = `${Math.max(sponsors.length * 4, 20)}s`;
 	.marquee-track {
 		display: flex;
 		width: max-content;
-		animation: marquee var(--marquee-duration, 30s) linear infinite;
+		/* Sin JavaScript: 2 copias y desplazamiento del 50 % */
+		animation: marquee var(--marquee-duration, 40s) linear infinite;
+		will-change: transform;
 	}
 
 	.sponsors:hover .marquee-track,
@@ -167,6 +213,7 @@ const duration = `${Math.max(sponsors.length * 4, 20)}s`;
 
 	.marquee-list {
 		display: flex;
+		flex-shrink: 0;
 		align-items: center;
 		gap: var(--space-16);
 		padding-right: var(--space-16);
@@ -177,33 +224,27 @@ const duration = `${Math.max(sponsors.length * 4, 20)}s`;
 		border-radius: var(--radius-sm);
 	}
 
+	/* 80 px de alto; los logos horizontales se limitan a 12 rem de ancho */
 	.sponsor :global(.sponsor-logo) {
 		display: block;
 		width: auto;
-		height: 3rem;
-		max-width: 10rem;
+		height: 5rem;
+		max-width: 12rem;
 		object-fit: contain;
-		filter: grayscale(1);
-		opacity: 0.65;
-		transition: opacity var(--duration-hover) var(--ease-out);
+		border-radius: var(--radius-md);
+		transition: transform var(--duration-hover) var(--ease-out);
 	}
 
 	@media (hover: hover) and (pointer: fine) {
-		.sponsor:hover :global(.sponsor-logo) {
-			filter: none;
-			opacity: 1;
+		.sponsor a:hover :global(.sponsor-logo) {
+			transform: scale(1.04);
 		}
-	}
-
-	.sponsor a:focus-visible :global(.sponsor-logo) {
-		filter: none;
-		opacity: 1;
 	}
 
 	.sponsor-placeholder {
 		display: grid;
 		place-items: center;
-		height: 3rem;
+		height: 5rem;
 		padding-inline: var(--space-5);
 		border: 1px dashed var(--color-border-strong);
 		border-radius: var(--radius-md);
@@ -218,7 +259,7 @@ const duration = `${Math.max(sponsors.length * 4, 20)}s`;
 			transform: translateX(0);
 		}
 		to {
-			transform: translateX(-50%);
+			transform: translateX(calc(var(--marquee-distance, 50%) * -1));
 		}
 	}
 

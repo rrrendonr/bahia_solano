@@ -11,35 +11,60 @@ interface Props {
 	title: string;
 	/** Parte del titular resaltada en naranja */
 	titleAccent?: string;
+	/** Texto después del resaltado; si existe, el resaltado va en la misma línea (p. ej. "¿Cuándo [sales] a pescar?") */
+	titleEnd?: string;
 	text?: string;
 	id?: string;
 	/** Botón principal; por defecto "Cotiza tu viaje" → contacto */
 	ctaLabel?: string;
 	ctaHref?: string;
+	/** Texto del botón de WhatsApp; por defecto "WhatsApp" */
+	whatsappLabel?: string;
+	/**
+	 * Mostrar el botón de WhatsApp aunque aún no haya número en site.ts.
+	 * Mientras falte el número, el botón lleva a la página de Contacto.
+	 */
+	alwaysShowWhatsapp?: boolean;
 }
 
-const { lang, title, titleAccent, text, id = 'cta', ctaLabel, ctaHref } = Astro.props;
+const {
+	lang,
+	title,
+	titleAccent,
+	titleEnd,
+	text,
+	id = 'cta',
+	ctaLabel,
+	ctaHref,
+	whatsappLabel = 'WhatsApp',
+	alwaysShowWhatsapp = false,
+} = Astro.props;
 const t = useTranslations(lang);
 const { whatsapp } = site.contact;
 const headingId = `${id}-title`;
+const showWhatsapp = Boolean(whatsapp) || alwaysShowWhatsapp;
+// Con número: abre WhatsApp en otra pestaña. Sin número: enlace provisional a Contacto.
+const whatsappLink = whatsapp
+	? { href: `https://wa.me/${whatsapp}`, target: '_blank', rel: 'noopener' }
+	: { href: localizePath('contact', lang) };
 ---
 
 <section id={id} class="cta-band surface-inverse" aria-labelledby={headingId}>
 	<div class="container cta-inner">
 		<div class="cta-copy">
 			<h2 id={headingId}>
-				{title}
-				{titleAccent && <span class="accent">{titleAccent}</span>}
+				{title}{titleAccent && ' '}
+				{titleAccent && <span class:list={['accent', { 'accent--inline': titleEnd }]}>{titleAccent}</span>}{titleEnd && ` ${titleEnd}`}
 			</h2>
 			{text && <p class="cta-text">{text}</p>}
 		</div>
 		<div class="cta-actions">
 			<Button href={ctaHref ?? localizePath('contact', lang)}>{ctaLabel ?? t('cta.quote')}</Button>
 			{
-				whatsapp && (
-					<Button href={`https://wa.me/${whatsapp}`} variant="ghost" target="_blank" rel="noopener">
+				showWhatsapp && (
+					<Button variant="ghost" {...whatsappLink}>
 						<Icon name="message" size={22} strokeWidth={2} />
-						WhatsApp
+						{whatsappLabel}
 					</Button>
 				)
 			}
@@ -71,6 +96,13 @@ const headingId = `${id}-title`;
 	.accent {
 		display: block;
 		color: var(--color-cta);
+	}
+
+	.accent--inline {
+		display: inline;
+		/* Palabra corta resaltada: no se corta con guion */
+		white-space: nowrap;
+		hyphens: manual;
 	}
 
 	.cta-text {

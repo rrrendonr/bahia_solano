@@ -1,4 +1,6 @@
 {
-	"name": "[Patrocinador 2]",
-	"order": 2
+	"name": "Cascabel",
+	"order": 2,
+	"logo": "../../assets/sponsors/cascabel.webp",
+	"url": "https://www.instagram.com/cascabelindumentaria/"
 }

@@ -8,6 +8,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import heroImage from '../../assets/images/hero.jpg';
 import heroMobileImage from '../../assets/images/hero-mobile.jpg';
 import ArtDirectedImage from '../../components/ui/ArtDirectedImage.astro';
+import CtaBand from '../../components/sections/CtaBand.astro';
 import SponsorsMarquee from '../../components/sections/SponsorsMarquee.astro';
 import Button from '../../components/ui/Button.astro';
 import SectionHeading from '../../components/ui/SectionHeading.astro';
@@ -37,54 +38,62 @@ const alternates = getAlternates('home');
 
 const content = {
 	es: {
-		title: 'Pesca deportiva en Bahía Solano, Pacífico colombiano',
+		title: 'Paquetes de pesca deportiva en Colombia y Latinoamérica',
 		description:
-			'Paquetes de pesca deportiva en Bahía Solano: vuelo desde Medellín, hospedaje en el Darien Lodge y bote con tripulación, guía y equipo.',
-		heroEyebrow: 'Pacífico colombiano · Chocó',
-		heroTitle: 'Pesca donde la selva se tira',
-		heroTitleAccent: 'al mar',
+			'Paquetes de pesca deportiva en destinos salvajes de Colombia y Latinoamérica: vuelos, hospedaje y bote con tripulación, guía y equipo.',
+		heroEyebrow: 'Pesca deportiva · Colombia y más allá',
+		heroTitle: 'Pesca donde',
+		heroTitleAccent: 'el mar manda',
 		heroText:
-			'Paquetes de pesca deportiva en Bahía Solano. Vuelo desde Medellín, hospedaje en el Darien Lodge y bote con tripulación, guía y equipo. Tú solo llegas a pescar.',
-		heroSecondary: 'Conoce los tours',
+			'Paquetes de pesca deportiva en destinos salvajes de Colombia y Latinoamérica. Vuelos, hospedaje y bote con tripulación, guía y equipo. Tú solo llegas a pescar.',
+		heroSecondary: 'Ver destinos',
 		heroAlt: 'Pesca deportiva a bordo de un bote en el mar Pacífico',
 		stepsEyebrow: 'El paquete',
-		stepsTitle: 'De Medellín a la línea de pesca, sin vueltas',
+		stepsTitle: 'De tu ciudad a la línea de pesca, sin vueltas',
 		stepsIntro:
-			'Armamos el viaje completo para que no tengas que coordinar aerolínea, hotel y lancha por separado.',
+			'Armamos el viaje completo para que no tengas que coordinar aerolínea, hotel y lancha por separado. Esto es lo que va en cada paquete.',
 		steps: [
-			{ icon: 'plane', title: 'Vuelo desde Medellín', text: 'Ida y regreso a Bahía Solano.' },
-			{ icon: 'house', title: 'Darien Lodge', text: 'Hospedaje durante todo el viaje.' },
+			{ icon: 'plane', title: 'Vuelos incluidos', text: 'Ida y regreso al destino. Coordinamos los vuelos para que llegues listo a pescar.' },
+			{ icon: 'house', title: 'Hospedaje', text: 'El lodge u hotel elegido para cada viaje, cerca del agua. Descansas bien y sales temprano a pescar.' },
 			{ icon: 'sailboat', title: 'Bote con tripulación', text: 'Sales con capitán, tripulación y un guía que conoce la zona.' },
-			{ icon: 'fish', title: 'Equipo de pesca', text: 'Cañas, carretes y señuelos incluidos.' },
+			{ icon: 'fish', title: 'Equipo de pesca', text: 'Cañas, carretes y señuelos listos. No tienes que viajar cargado.' },
 		],
 		toursEyebrow: 'Destinos',
 		toursTitle: 'A dónde vamos a pescar',
 		testimonialsEyebrow: 'Quienes ya fueron',
+		ctaTitle: '¿Cuándo',
+		ctaTitleAccent: 'sales',
+		ctaTitleEnd: 'a pescar?',
+		ctaText: 'Cuéntanos a dónde quieres ir, fechas y cuántos viajan. Te respondemos con disponibilidad y el precio del paquete.',
 	},
 	en: {
-		title: 'Sport fishing in Bahía Solano, Colombian Pacific',
+		title: 'Sport fishing packages in Colombia and Latin America',
 		description:
-			'Sport fishing packages in Bahía Solano: flights from Medellín, stay at Darien Lodge, and a boat with crew, guide and tackle.',
-		heroEyebrow: 'Colombian Pacific · Chocó',
-		heroTitle: 'Fish where the jungle meets',
-		heroTitleAccent: 'the sea',
+			'Sport fishing packages to wild destinations in Colombia and Latin America: flights, lodging and a boat with crew, guide and tackle.',
+		heroEyebrow: 'Sport fishing · Colombia and beyond',
+		heroTitle: 'Fish where',
+		heroTitleAccent: 'the sea rules',
 		heroText:
-			'Sport fishing packages in Bahía Solano. Flights from Medellín, a stay at Darien Lodge, and a boat with crew, guide and tackle. You just show up and fish.',
-		heroSecondary: 'See the tours',
+			'Sport fishing packages to wild destinations in Colombia and Latin America. Flights, lodging and a boat with crew, guide and tackle. You just show up and fish.',
+		heroSecondary: 'See destinations',
 		heroAlt: 'Sport fishing on board a boat in the Pacific Ocean',
 		stepsEyebrow: 'The package',
-		stepsTitle: 'From Medellín to the fishing line, hassle-free',
+		stepsTitle: 'From your city to the fishing line, hassle-free',
 		stepsIntro:
-			'We put the whole trip together, so you don’t have to book flights, lodging and boat separately.',
+			'We put the whole trip together, so you don’t have to book flights, lodging and boat separately. Here’s what every package includes.',
 		steps: [
-			{ icon: 'plane', title: 'Flights from Medellín', text: 'Round trip to Bahía Solano.' },
-			{ icon: 'house', title: 'Darien Lodge', text: 'Lodging for the whole trip.' },
+			{ icon: 'plane', title: 'Flights included', text: 'Round trip to the destination. We coordinate your flights so you arrive ready to fish.' },
+			{ icon: 'house', title: 'Lodging', text: 'The lodge or hotel chosen for each trip, close to the water. Rest well and head out early.' },
 			{ icon: 'sailboat', title: 'Boat with crew', text: 'You head out with a captain, crew and a guide who knows the area.' },
-			{ icon: 'fish', title: 'Fishing tackle', text: 'Rods, reels and lures included.' },
+			{ icon: 'fish', title: 'Fishing tackle', text: 'Rods, reels and lures ready to go. No need to travel loaded.' },
 		],
 		toursEyebrow: 'Destinations',
 		toursTitle: 'Where we fish',
 		testimonialsEyebrow: 'From our guests',
+		ctaTitle: 'When do you',
+		ctaTitleAccent: 'head out',
+		ctaTitleEnd: 'to fish?',
+		ctaText: 'Tell us where you want to go, your dates and how many are traveling. We’ll reply with availability and the package price.',
 	},
 } as const;
 
@@ -144,7 +153,7 @@ const schema = {
 			<p class="hero-text">{c.heroText}</p>
 			<div class="hero-actions">
 				<Button href={localizePath('contact', lang)}>{t('cta.quote')}</Button>
-				<Button href={localizePath('tours', lang)} variant="ghost">{c.heroSecondary}</Button>
+				<Button href="#destinos" variant="ghost">{c.heroSecondary}</Button>
 			</div>
 		</div>
 	</section>
@@ -164,7 +173,7 @@ const schema = {
 	</section>
 
 	<!-- Destinos -->
-	<section class="section section--flush-top" aria-labelledby="tours-title">
+	<section id="destinos" class="section section--flush-top" aria-labelledby="tours-title">
 		<div class="container">
 			<SectionHeading id="tours-title" eyebrow={c.toursEyebrow} title={c.toursTitle} />
 			<div class="tours-grid">
@@ -203,6 +212,18 @@ const schema = {
 			</div>
 		</div>
 	</section>
+
+	<!-- ¿Cuándo sales a pescar? -->
+	<CtaBand
+		lang={lang}
+		id="contacto"
+		title={c.ctaTitle}
+		titleAccent={c.ctaTitleAccent}
+		titleEnd={c.ctaTitleEnd}
+		text={c.ctaText}
+		whatsappLabel={t('cta.whatsapp')}
+		alwaysShowWhatsapp
+	/>
 
 	<!-- Patrocinadores -->
 	<SponsorsMarquee lang={lang} />

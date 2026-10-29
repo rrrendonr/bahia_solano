@@ -1,4 +1,6 @@
 {
-	"name": "[Patrocinador 1]",
-	"order": 1
+	"name": "Faria's Lures",
+	"order": 1,
+	"logo": "../../assets/sponsors/farias-lures.webp",
+	"url": "https://www.instagram.com/fariaslures"
 }

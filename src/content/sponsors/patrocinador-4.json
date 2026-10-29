@@ -1,4 +1,6 @@
 {
-	"name": "[Patrocinador 4]",
-	"order": 4
+	"name": "Altamar Señuelos",
+	"order": 4,
+	"logo": "../../assets/sponsors/altamar-senuelos.webp",
+	"url": "https://www.instagram.com/senuelosaltamar"
 }
