@@ -1,4 +1,6 @@
 {
-	"name": "[Patrocinador 6]",
-	"order": 6
+	"name": "Bad Crab",
+	"order": 6,
+	"logo": "../../assets/sponsors/bad-crab.webp",
+	"url": "https://www.instagram.com/badcrab_colombia"
 }

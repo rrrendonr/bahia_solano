@@ -1,4 +1,6 @@
 {
-	"name": "[Patrocinador 5]",
-	"order": 5
+	"name": "Colombia Fly Fishing",
+	"order": 5,
+	"logo": "../../assets/sponsors/colombia-fly-fishing.svg",
+	"url": "https://www.instagram.com/colombiaflyfishing"
 }
